@@ -29,11 +29,20 @@ struct EquinozioApp: App {
             Decisione.self,
             Insight.self,
         ])
-        let config = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: false,
-            cloudKitDatabase: .private("iCloud.it.systema360.equinozio")
-        )
+
+        // Sotto il test runner usiamo uno store in-memory: evita l'inizializzazione
+        // di CloudKit (che, senza account iCloud, fa crashare l'host dei test sul
+        // simulatore) e isola ogni esecuzione dei test.
+        let inTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+
+        let config: ModelConfiguration = inTest
+            ? ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            : ModelConfiguration(
+                schema: schema,
+                isStoredInMemoryOnly: false,
+                cloudKitDatabase: .private("iCloud.it.systema360.equinozio")
+            )
+
         do {
             return try ModelContainer(for: schema, configurations: [config])
         } catch {
