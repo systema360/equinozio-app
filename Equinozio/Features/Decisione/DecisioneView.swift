@@ -427,6 +427,7 @@ private struct ComposerDecisione: View {
                     RoundedRectangle(cornerRadius: R.r2)
                         .stroke(Color.lineaSottile, lineWidth: 1)
                 )
+                .accessibilityLabel("Note della decisione")
         }
     }
 
@@ -640,6 +641,7 @@ private struct DettaglioDecisione: View {
                                 .allowsHitTesting(false)
                         }
                     }
+                    .accessibilityLabel("La tua decisione")
 
                 HStack(spacing: S.x3) {
                     if inModificaScelta {

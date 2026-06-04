@@ -229,6 +229,8 @@ struct RiflessioneView: View {
                 }
             ), in: 0...100, step: 1)
             .tint(tipo.colore)
+            .accessibilityLabel(tipo.titoloRiflessione)
+            .accessibilityValue("\(valore.wrappedValue) percento")
         }
     }
 

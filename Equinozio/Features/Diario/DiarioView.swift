@@ -244,6 +244,9 @@ private struct FiltroChip: View {
                 )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(Text(titolo))
+        .accessibilityValue(attivo ? "selezionato" : "non selezionato")
+        .accessibilityAddTraits(attivo ? [.isButton, .isSelected] : .isButton)
     }
 }
 
@@ -319,6 +322,7 @@ private struct ComposerPagina: View {
                                 .allowsHitTesting(false)
                         }
                     }
+                    .accessibilityLabel("Testo della pagina")
 
                 VStack(alignment: .leading, spacing: S.x2) {
                     HStack {
@@ -458,6 +462,7 @@ private struct DettaglioPaginaView: View {
                             .font(.equinozio(.corpoGrande))
                             .scrollContentBackground(.hidden)
                             .frame(minHeight: 200)
+                            .accessibilityLabel("Testo della pagina")
                     } else {
                         Text(pagina.testo)
                             .font(.equinozio(.corpoGrande))
