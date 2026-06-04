@@ -30,12 +30,16 @@ struct MappaView: View {
     private var decisioniAperte: [Decisione] {
         decisioni.filter { $0.decisione?.isEmpty != false }.prefix(2).map { $0 }
     }
+    private var insight: [InsightGenerato] {
+        GeneratoreInsight.genera(riflessioni: riflessioni, decisioni: decisioni, adesso: .now)
+    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: S.x5) {
                 intestazione
                 bloccoEquilibrio
+                BloccoInsight(insight: insight)
                 bloccoDiagramma
                 bloccoAttività
             }
