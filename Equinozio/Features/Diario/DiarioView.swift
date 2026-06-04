@@ -39,6 +39,20 @@ struct DiarioView: View {
                         .foregroundStyle(Color.inchiostro)
                         .padding(.bottom, S.x4)
 
+                    if !pagine.isEmpty {
+                        ShareLink(item: EsportaDiario.testo(da: pagine)) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .font(.system(size: 12, weight: .medium))
+                                Text("ESPORTA")
+                                    .font(.equinozio(.etichetta))
+                                    .tracking(1.6)
+                            }
+                            .foregroundStyle(Color.salvia)
+                        }
+                        .padding(.bottom, S.x4)
+                    }
+
                     campoRicerca
                         .padding(.bottom, S.x3)
 
