@@ -114,8 +114,17 @@ public final class Riflessione {
     }
 
     public var equilibrio: Int {
-        let scarti = [quotaPassione, quotaTalento, quotaMissione, quotaProfessione]
-            .map { abs($0 - 25) }
+        Riflessione.equilibrio(
+            passione: quotaPassione,
+            talento: quotaTalento,
+            missione: quotaMissione,
+            professione: quotaProfessione
+        )
+    }
+
+    /// Formula dell'equilibrio: 100 meno il doppio dello scarto medio da 25/25/25/25.
+    public static func equilibrio(passione: Int, talento: Int, missione: Int, professione: Int) -> Int {
+        let scarti = [passione, talento, missione, professione].map { abs($0 - 25) }
         let scartoMedio = scarti.reduce(0, +) / 4
         return max(0, 100 - scartoMedio * 2)
     }

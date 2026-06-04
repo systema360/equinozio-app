@@ -253,10 +253,12 @@ struct RiflessioneView: View {
     }
 
     private var equilibrioCorrente: Int {
-        let scarti = [quotePassione, quoteTalento, quoteMissione, quoteProfessione]
-            .map { abs($0 - 25) }
-        let scartoMedio = scarti.reduce(0, +) / 4
-        return max(0, 100 - scartoMedio * 2)
+        Riflessione.equilibrio(
+            passione: quotePassione,
+            talento: quoteTalento,
+            missione: quoteMissione,
+            professione: quoteProfessione
+        )
     }
 
     private var periodoCorrente: String {
