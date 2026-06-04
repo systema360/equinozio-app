@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# Brainstorm artifacts (superpowers visual companion)
+/.superpowers
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.moved-aside
+DerivedData/
+build/
+
+# Swift Package Manager
+.swiftpm/
+.build/
