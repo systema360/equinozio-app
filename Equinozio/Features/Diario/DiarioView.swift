@@ -350,6 +350,7 @@ private struct DettaglioPaginaView: View {
     @State private var testoEditabile = ""
     @State private var etichetteEditabili: Set<TipoCerchio> = []
     @State private var mostraConfermaCancella = false
+    @State private var suggerendo = false
 
     var body: some View {
         NavigationStack {
@@ -377,10 +378,36 @@ private struct DettaglioPaginaView: View {
 
                     // Etichette
                     VStack(alignment: .leading, spacing: S.x2) {
-                        Text("CERCHI ASSOCIATI")
-                            .font(.equinozio(.etichetta))
-                            .tracking(1.8)
-                            .foregroundStyle(Color.attenuato)
+                        HStack {
+                            Text("CERCHI ASSOCIATI")
+                                .font(.equinozio(.etichetta))
+                                .tracking(1.8)
+                                .foregroundStyle(Color.attenuato)
+
+                            Spacer()
+
+                            if inModifica {
+                                Button {
+                                    Task { await suggerisciEtichette() }
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        if suggerendo {
+                                            ProgressView().scaleEffect(0.6).frame(width: 12, height: 12)
+                                        } else {
+                                            Image(systemName: "sparkles")
+                                                .font(.system(size: 11, weight: .medium))
+                                        }
+                                        Text("SUGGERISCI")
+                                            .font(.equinozio(.etichetta))
+                                            .tracking(1.2)
+                                    }
+                                    .foregroundStyle(Color.salvia)
+                                }
+                                .buttonStyle(.plain)
+                                .disabled(suggerendo || testoEditabile.trimmingCharacters(in: .whitespaces).isEmpty)
+                                .opacity(testoEditabile.trimmingCharacters(in: .whitespaces).isEmpty ? 0.4 : 1)
+                            }
+                        }
 
                         FlowLayout(spacing: S.x2) {
                             ForEach(TipoCerchio.allCases) { tipo in
@@ -485,6 +512,13 @@ private struct DettaglioPaginaView: View {
         testoEditabile = pagina.testo
         etichetteEditabili = pagina.etichette
         inModifica = true
+    }
+
+    private func suggerisciEtichette() async {
+        suggerendo = true
+        defer { suggerendo = false }
+        let suggerite = await TagSuggestionService.shared.suggerisci(per: testoEditabile)
+        etichetteEditabili = Set(suggerite)
     }
 
     private func salva() {
