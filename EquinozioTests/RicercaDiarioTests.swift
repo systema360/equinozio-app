@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import SwiftData
 @testable import Equinozio
 
 struct RicercaDiarioTests {
@@ -32,5 +33,22 @@ struct RicercaDiarioTests {
         let a = pagina("x", [.passione])
         let b = pagina("y", [.talento])
         #expect(RicercaDiario.filtra([a, b], cerchio: .talento, ricerca: "").count == 1)
+    }
+
+    @MainActor
+    @Test func ripristinoEscludeERiportaLaPagina() throws {
+        let schema = Schema([Profilo.self, Cerchio.self, Elemento.self, Pagina.self, Riflessione.self, Decisione.self, Insight.self])
+        let container = try ModelContainer(for: schema, configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)])
+        let ctx = container.mainContext
+        let p = Pagina(testo: "da cancellare")
+        ctx.insert(p); try ctx.save()
+
+        p.isCancellata = true; try ctx.save()
+        let attive1 = try ctx.fetch(FetchDescriptor<Pagina>(predicate: #Predicate { !$0.isCancellata }))
+        #expect(attive1.isEmpty)
+
+        p.isCancellata = false; try ctx.save()
+        let attive2 = try ctx.fetch(FetchDescriptor<Pagina>(predicate: #Predicate { !$0.isCancellata }))
+        #expect(attive2.count == 1)
     }
 }

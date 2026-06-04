@@ -18,6 +18,8 @@ struct DiarioView: View {
     @State private var composerAperto = false
     @State private var paginaSelezionata: Pagina?
     @State private var ricerca = ""
+    @State private var ultimaCancellata: Pagina?
+    @State private var mostraUndo = false
 
     private var pagineFiltrate: [Pagina] {
         RicercaDiario.filtra(pagine, cerchio: filtro, ricerca: ricerca)
@@ -100,6 +102,32 @@ struct DiarioView: View {
             }
             .padding(.trailing, S.x5)
             .padding(.bottom, S.x5)
+
+            if mostraUndo {
+                HStack(spacing: S.x3) {
+                    Text("Pagina cancellata")
+                        .font(.equinozio(.corpoMedio))
+                        .foregroundStyle(Color.superficie)
+                    Spacer()
+                    Button {
+                        annullaCancellazione()
+                    } label: {
+                        Text("ANNULLA")
+                            .font(.equinozio(.etichetta))
+                            .tracking(1.6)
+                            .foregroundStyle(Color.salviaTenue)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, S.x4)
+                .padding(.vertical, S.x3)
+                .background(Color.inchiostro)
+                .clipShape(Capsule())
+                .padding(.horizontal, S.x5)
+                .padding(.bottom, S.x5)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
         }
         .sheet(isPresented: $composerAperto) {
             ComposerPagina()
@@ -160,6 +188,22 @@ struct DiarioView: View {
         withAnimation {
             pagina.isCancellata = true
             try? contesto.save()
+            ultimaCancellata = pagina
+            mostraUndo = true
+        }
+        Task {
+            try? await Task.sleep(for: .seconds(4))
+            withAnimation { mostraUndo = false }
+        }
+    }
+
+    private func annullaCancellazione() {
+        guard let p = ultimaCancellata else { return }
+        withAnimation {
+            p.isCancellata = false
+            try? contesto.save()
+            mostraUndo = false
+            ultimaCancellata = nil
         }
     }
 
