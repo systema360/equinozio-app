@@ -185,9 +185,44 @@ struct ImpostazioniView: View {
                         }
                         .buttonStyle(.plain)
 
+                        ShareLink(
+                            item: URL(string: "https://systema360.it")!,
+                            subject: Text("Equinozio"),
+                            message: Text("Equinozio — uno strumento sobrio per bilanciare i quattro cerchi della tua vita. Gratis, da Systema360.")
+                        ) {
+                            HStack {
+                                Image(systemName: "square.and.arrow.up")
+                                    .font(.system(size: 18, weight: .light))
+                                    .foregroundStyle(Color.salvia)
+                                    .frame(width: 28)
+                                Text("Condividi Equinozio")
+                                    .font(.equinozio(.corpo))
+                                    .foregroundStyle(Color.inchiostro)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundStyle(Color.attenuato)
+                            }
+                            .padding(S.x4)
+                            .background(Color.superficie)
+                            .clipShape(RoundedRectangle(cornerRadius: R.r1))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: R.r1)
+                                    .stroke(Color.lineaSottile, lineWidth: 1)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.top, S.x2)
+
                         Text("Versione 1.0 (1)")
                             .font(.equinozio(.corpoMedio))
                             .foregroundStyle(Color.inchiostroTenue)
+                            .padding(.top, S.x3)
+
+                        Text("Equinozio è il biglietto da visita di Systema360, studio di consulenza e progettazione digitale a Potenza. Se ti serve un sistema digitale curato così, parliamone.")
+                            .font(.equinozio(.corpoMedio))
+                            .foregroundStyle(Color.inchiostroTenue)
+                            .fixedSize(horizontal: false, vertical: true)
                             .padding(.top, S.x3)
 
                         Link(destination: URL(string: "https://systema360.it")!) {
