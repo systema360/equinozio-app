@@ -23,6 +23,10 @@ struct ImpostazioniView: View {
     @State private var iCloudService = iCloudStatoService.shared
     @AppStorage("schemaPreferito") private var schemaPreferito: SchemaPreferito = .sistema
     @AppStorage("promemoriaRiflessione") private var promemoriaPersistito: Bool = false
+    @AppStorage("promemoriaGiorno") private var promemoriaGiorno: Int = 1
+    @AppStorage("promemoriaOra") private var promemoriaOra: Int = 19
+    @AppStorage("promemoriaMinuto") private var promemoriaMinuto: Int = 0
+    @AppStorage("promemoriaTesto") private var promemoriaTesto: String = "Cinque minuti per la tua riflessione settimanale."
     @AppStorage("esplorazioneCompletata") private var esplorazioneCompletata: Bool = false
     @AppStorage("protezioneBiometrica") private var protezioneBiometrica: Bool = false
 
@@ -99,16 +103,58 @@ struct ImpostazioniView: View {
                     }
 
                     sezione(occhiello: "Promemoria", titolo: "Riflessione settimanale") {
-                        Toggle(isOn: bindingPromemoria) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Ogni domenica, ore 19:00")
-                                    .font(.equinozio(.corpo))
-                                Text(testoStatoPromemoria)
-                                    .font(.equinozio(.corpoMedio))
-                                    .foregroundStyle(Color.attenuato)
+                        VStack(alignment: .leading, spacing: S.x3) {
+                            Toggle(isOn: bindingPromemoria) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Promemoria settimanale")
+                                        .font(.equinozio(.corpo))
+                                    Text(testoStatoPromemoria)
+                                        .font(.equinozio(.corpoMedio))
+                                        .foregroundStyle(Color.attenuato)
+                                }
+                            }
+                            .tint(.salvia)
+
+                            if promemoriaAttivo {
+                                Picker("Giorno", selection: bindingGiorno) {
+                                    ForEach(1...7, id: \.self) { g in
+                                        Text(nomeGiorno(g)).tag(g)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .tint(.salvia)
+
+                                DatePicker(
+                                    "Orario",
+                                    selection: bindingOrario,
+                                    displayedComponents: .hourAndMinute
+                                )
+                                .environment(\.locale, Locale(identifier: "it_IT"))
+
+                                VStack(alignment: .leading, spacing: S.x1) {
+                                    Text("MESSAGGIO")
+                                        .font(.equinozio(.etichetta))
+                                        .tracking(1.8)
+                                        .foregroundStyle(Color.attenuato)
+                                    TextField("Messaggio del promemoria", text: bindingTesto, axis: .vertical)
+                                        .font(.equinozio(.corpoMedio))
+                                        .lineLimit(1...3)
+                                        .textFieldStyle(.plain)
+                                        .padding(.vertical, S.x2)
+                                        .overlay(alignment: .bottom) {
+                                            Rectangle().frame(height: 1).foregroundStyle(Color.lineaSottile)
+                                        }
+                                }
                             }
                         }
-                        .tint(.salvia)
+                        .padding(S.x4)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.superficie)
+                        .clipShape(RoundedRectangle(cornerRadius: R.r1))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: R.r1)
+                                .stroke(Color.lineaSottile, lineWidth: 1)
+                        )
                     }
 
                     sezione(occhiello: "Equinozio", titolo: "Da Systema360, con cura") {
@@ -210,14 +256,58 @@ struct ImpostazioniView: View {
         )
     }
 
+    private var bindingGiorno: Binding<Int> {
+        Binding(get: { promemoriaGiorno }, set: { promemoriaGiorno = $0; Task { await riprogramma() } })
+    }
+
+    private var bindingOrario: Binding<Date> {
+        Binding(
+            get: {
+                var c = DateComponents(); c.hour = promemoriaOra; c.minute = promemoriaMinuto
+                return Calendar.current.date(from: c) ?? .now
+            },
+            set: { nuova in
+                let c = Calendar.current.dateComponents([.hour, .minute], from: nuova)
+                promemoriaOra = c.hour ?? 19
+                promemoriaMinuto = c.minute ?? 0
+                Task { await riprogramma() }
+            }
+        )
+    }
+
+    private var bindingTesto: Binding<String> {
+        Binding(get: { promemoriaTesto }, set: { promemoriaTesto = $0; Task { await riprogramma() } })
+    }
+
+    private func nomeGiorno(_ g: Int) -> String {
+        let it = DateFormatter(); it.locale = Locale(identifier: "it_IT")
+        let nomi = it.weekdaySymbols ?? Calendar(identifier: .gregorian).weekdaySymbols
+        let idx = max(0, min(6, g - 1))
+        return nomi[idx].capitalized
+    }
+
+    /// Riprogramma con le preferenze correnti, solo se attivo e autorizzato.
+    private func riprogramma() async {
+        guard promemoriaAttivo else { return }
+        let stato = await PromemoriaService.shared.statoAutorizzazione()
+        guard stato == .authorized || stato == .provisional else { return }
+        await PromemoriaService.shared.schedulaRiflessione(
+            giorno: promemoriaGiorno, ora: promemoriaOra, minuto: promemoriaMinuto,
+            titolo: "Riflessione settimanale", corpo: promemoriaTesto
+        )
+    }
+
     private var testoStatoPromemoria: String {
         switch statoPromemoria {
         case .denied:
             return "Permesso notifiche negato · attivalo da Impostazioni di sistema"
         case .authorized, .provisional, .ephemeral:
-            return promemoriaAttivo
-                ? "Ti ricordiamo gentilmente di tornare per cinque minuti"
-                : "Tocca per attivare il promemoria"
+            if promemoriaAttivo,
+               let prossima = PromemoriaService.prossimaData(giorno: promemoriaGiorno, ora: promemoriaOra, minuto: promemoriaMinuto) {
+                let f = DateFormatter(); f.locale = Locale(identifier: "it_IT"); f.dateFormat = "EEEE 'alle' HH:mm"
+                return "Prossimo · " + f.string(from: prossima)
+            }
+            return promemoriaAttivo ? "Attivo" : "Tocca per attivare il promemoria"
         case .notDetermined:
             return "Tocca per attivare e dare il permesso notifiche"
         @unknown default:
@@ -231,12 +321,14 @@ struct ImpostazioniView: View {
 
     private func aggiornaPromemoria(_ attivo: Bool) async {
         if attivo {
-            let stato = await PromemoriaService.shared.statoAutorizzazione()
+            var stato = await PromemoriaService.shared.statoAutorizzazione()
             if stato == .notDetermined {
                 let concesso = await PromemoriaService.shared.chiediEAttiva()
                 if !concesso { promemoriaAttivo = false }
-            } else if stato == .authorized || stato == .provisional {
-                await PromemoriaService.shared.schedulaRiflessione()
+                stato = await PromemoriaService.shared.statoAutorizzazione()
+            }
+            if stato == .authorized || stato == .provisional {
+                await riprogramma()
             } else {
                 promemoriaAttivo = false
             }
