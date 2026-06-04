@@ -111,6 +111,18 @@ struct RiflessioneView: View {
                 .tracking(2.4)
                 .foregroundStyle(Color.salvia)
             Spacer()
+            if introLetta {
+                Button {
+                    withAnimation { introLetta = false }
+                } label: {
+                    Image(systemName: "questionmark.circle")
+                        .font(.system(size: 16, weight: .light))
+                        .foregroundStyle(Color.attenuato)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Mostra spiegazione della riflessione")
+                .padding(.trailing, S.x2)
+            }
             if !riflessioniPassate.isEmpty {
                 Button {
                     storicoAperto = true

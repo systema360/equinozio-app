@@ -61,6 +61,18 @@ struct StoricoRiflessioniView: View {
                         .tracking(2.2)
                         .foregroundStyle(Color.salvia)
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    if introLetta {
+                        Button {
+                            withAnimation { introLetta = false }
+                        } label: {
+                            Image(systemName: "questionmark.circle")
+                                .font(.system(size: 16, weight: .light))
+                        }
+                        .tint(.attenuato)
+                        .accessibilityLabel("Mostra spiegazione dello storico")
+                    }
+                }
             }
         }
     }
