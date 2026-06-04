@@ -27,36 +27,38 @@ public final class PromemoriaService {
         return settings.authorizationStatus
     }
 
-    /// Chiede il permesso · se viene concesso, schedula automaticamente il promemoria.
+    /// Chiede il permesso notifiche. Ritorna true se concesso.
+    /// NON schedula: il chiamante chiama `schedulaRiflessione(...)` con le preferenze.
     @discardableResult
     public func chiediEAttiva() async -> Bool {
         do {
-            let concesso = try await centro.requestAuthorization(options: [.alert, .sound, .badge])
-            if concesso {
-                await schedulaRiflessione()
-            }
-            return concesso
+            return try await centro.requestAuthorization(options: [.alert, .sound, .badge])
         } catch {
             log.warning("Errore richiesta autorizzazione: \(error.localizedDescription)")
             return false
         }
     }
 
-    /// Programma il promemoria settimanale (domenica 19:00).
-    /// Rimuove eventuali notifiche precedenti per evitare duplicati.
-    public func schedulaRiflessione() async {
+    /// Programma il promemoria settimanale ai parametri dati (default: domenica 19:00).
+    public func schedulaRiflessione(
+        giorno: Int = 1,
+        ora: Int = 19,
+        minuto: Int = 0,
+        titolo: String = "Riflessione settimanale",
+        corpo: String = "Cinque minuti per la tua riflessione settimanale."
+    ) async {
         centro.removePendingNotificationRequests(withIdentifiers: [Self.identificatoreRiflessione])
 
         let contenuto = UNMutableNotificationContent()
-        contenuto.title = "È domenica."
-        contenuto.body = "Cinque minuti per la tua riflessione settimanale."
+        contenuto.title = titolo
+        contenuto.body = corpo
         contenuto.sound = .default
         contenuto.threadIdentifier = "riflessione"
 
         var componenti = DateComponents()
-        componenti.weekday = 1   // Domenica (Calendar.current con weekday 1 = Sunday)
-        componenti.hour = 19
-        componenti.minute = 0
+        componenti.weekday = giorno
+        componenti.hour = ora
+        componenti.minute = minuto
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: componenti, repeats: true)
         let richiesta = UNNotificationRequest(
@@ -67,10 +69,22 @@ public final class PromemoriaService {
 
         do {
             try await centro.add(richiesta)
-            log.info("Promemoria settimanale programmato · domenica 19:00")
+            log.info("Promemoria programmato · giorno \(giorno) \(ora):\(minuto)")
         } catch {
             log.warning("Impossibile programmare promemoria: \(error.localizedDescription)")
         }
+    }
+
+    /// Calcola la prossima occorrenza di (giorno della settimana, ora, minuto) dopo `da`.
+    /// `giorno`: 1 = domenica … 7 = sabato (convenzione Calendar).
+    nonisolated public static func prossimaData(
+        giorno: Int, ora: Int, minuto: Int, da: Date = .now, calendario: Calendar = .current
+    ) -> Date? {
+        var componenti = DateComponents()
+        componenti.weekday = giorno
+        componenti.hour = ora
+        componenti.minute = minuto
+        return calendario.nextDate(after: da, matching: componenti, matchingPolicy: .nextTime)
     }
 
     /// Cancella il promemoria settimanale.
