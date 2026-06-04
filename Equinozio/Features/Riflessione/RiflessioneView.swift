@@ -20,6 +20,7 @@ struct RiflessioneView: View {
     @State private var storicoAperto = false
     @State private var salvataggioFatto: Bool = false
     @State private var caricato: Bool = false
+    @State private var pensiero: String = ""
 
     @AppStorage("riflessioneIntroLetta") private var introLetta: Bool = false
 
@@ -232,7 +233,7 @@ struct RiflessioneView: View {
     }
 
     private var pensieroGuidato: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: S.x2) {
             Text("PENSIERO GUIDATO")
                 .font(.equinozio(.etichetta))
                 .tracking(1.8)
@@ -241,6 +242,29 @@ struct RiflessioneView: View {
             Text("Mentre rifletti su questa settimana, dove hai sentito più presenza?")
                 .font(.equinozio(.corpo))
                 .foregroundStyle(Color.inchiostroTenue)
+
+            TextEditor(text: $pensiero)
+                .font(.equinozio(.corpo))
+                .frame(minHeight: 80)
+                .scrollContentBackground(.hidden)
+                .padding(S.x2)
+                .background(Color.superficie)
+                .clipShape(RoundedRectangle(cornerRadius: R.r2))
+                .overlay(
+                    RoundedRectangle(cornerRadius: R.r2)
+                        .stroke(Color.lineaSottile, lineWidth: 1)
+                )
+                .overlay(alignment: .topLeading) {
+                    if pensiero.isEmpty {
+                        Text("Una riga, se ti va.")
+                            .font(.equinozio(.corpo))
+                            .foregroundStyle(Color.attenuato)
+                            .padding(.top, S.x2 + 8)
+                            .padding(.leading, S.x2 + 5)
+                            .allowsHitTesting(false)
+                    }
+                }
+                .accessibilityLabel("Pensiero della settimana")
         }
         .padding(.leading, S.x4)
         .overlay(Rectangle().frame(width: 2).foregroundStyle(Color.salvia), alignment: .leading)
@@ -284,6 +308,7 @@ struct RiflessioneView: View {
             quoteTalento = esistente.quotaTalento
             quoteMissione = esistente.quotaMissione
             quoteProfessione = esistente.quotaProfessione
+            pensiero = esistente.pensiero
         }
     }
 
@@ -299,13 +324,15 @@ struct RiflessioneView: View {
             esistente.quotaMissione = quoteMissione
             esistente.quotaProfessione = quoteProfessione
             esistente.data = inizio
+            esistente.pensiero = pensiero.trimmingCharacters(in: .whitespacesAndNewlines)
         } else {
             let nuova = Riflessione(
                 data: inizio,
                 quotaPassione: quotePassione,
                 quotaTalento: quoteTalento,
                 quotaMissione: quoteMissione,
-                quotaProfessione: quoteProfessione
+                quotaProfessione: quoteProfessione,
+                pensiero: pensiero.trimmingCharacters(in: .whitespacesAndNewlines)
             )
             contesto.insert(nuova)
         }

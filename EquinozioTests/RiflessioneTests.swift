@@ -5,6 +5,7 @@
 
 import Testing
 import SwiftData
+import Foundation
 @testable import Equinozio
 
 struct RiflessioneTests {
@@ -25,5 +26,23 @@ struct RiflessioneTests {
 
     @Test func equilibrioNonNegativo() {
         #expect(Riflessione.equilibrio(passione: 100, talento: 0, missione: 0, professione: 0) >= 0)
+    }
+
+    @MainActor
+    @Test func pensieroPersisteSuSwiftData() throws {
+        let schema = Schema([Profilo.self, Cerchio.self, Elemento.self, Pagina.self, Riflessione.self, Decisione.self, Insight.self])
+        let container = try ModelContainer(
+            for: schema,
+            configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)]
+        )
+        let ctx = container.mainContext
+
+        let r = Riflessione(data: .now, quotaPassione: 25, quotaTalento: 25, quotaMissione: 25, quotaProfessione: 25, pensiero: "Settimana intensa")
+        ctx.insert(r)
+        try ctx.save()
+
+        let lette = try ctx.fetch(FetchDescriptor<Riflessione>())
+        #expect(lette.count == 1)
+        #expect(lette.first?.pensiero == "Settimana intensa")
     }
 }
