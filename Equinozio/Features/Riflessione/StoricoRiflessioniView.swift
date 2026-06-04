@@ -14,6 +14,7 @@ struct StoricoRiflessioniView: View {
     @Environment(\.dismiss) private var chiudi
     @Query(sort: \Riflessione.data, order: .reverse) private var riflessioni: [Riflessione]
     @AppStorage("storicoIntroLetta") private var introLetta: Bool = false
+    @State private var inModifica: Riflessione?
 
     private var equilibrioMedio: Int {
         guard !riflessioni.isEmpty else { return 0 }
@@ -45,6 +46,10 @@ struct StoricoRiflessioniView: View {
                 .padding(.bottom, S.x6)
             }
             .background(Color.sfondo)
+            .sheet(item: $inModifica) { r in
+                ModificaRiflessioneView(riflessione: r)
+                    .presentationDetents([.large])
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Chiudi") { chiudi() }
@@ -216,7 +221,12 @@ struct StoricoRiflessioniView: View {
             } else {
                 LazyVStack(spacing: S.x2) {
                     ForEach(riflessioni) { r in
-                        rigaRiflessione(r)
+                        Button {
+                            inModifica = r
+                        } label: {
+                            rigaRiflessione(r)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }

@@ -45,4 +45,26 @@ struct RiflessioneTests {
         #expect(lette.count == 1)
         #expect(lette.first?.pensiero == "Settimana intensa")
     }
+
+    @MainActor
+    @Test func modificaQuotePersisteEAggiornaEquilibrio() throws {
+        let schema = Schema([Profilo.self, Cerchio.self, Elemento.self, Pagina.self, Riflessione.self, Decisione.self, Insight.self])
+        let container = try ModelContainer(
+            for: schema,
+            configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)]
+        )
+        let ctx = container.mainContext
+
+        let r = Riflessione(data: .now, quotaPassione: 70, quotaTalento: 10, quotaMissione: 10, quotaProfessione: 10)
+        ctx.insert(r)
+        try ctx.save()
+
+        r.quotaPassione = 25; r.quotaTalento = 25; r.quotaMissione = 25; r.quotaProfessione = 25
+        r.pensiero = "Riequilibrata"
+        try ctx.save()
+
+        let letta = try ctx.fetch(FetchDescriptor<Riflessione>()).first
+        #expect(letta?.equilibrio == 100)
+        #expect(letta?.pensiero == "Riequilibrata")
+    }
 }
