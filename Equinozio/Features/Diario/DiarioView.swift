@@ -17,10 +17,10 @@ struct DiarioView: View {
     @State private var filtro: TipoCerchio? = nil
     @State private var composerAperto = false
     @State private var paginaSelezionata: Pagina?
+    @State private var ricerca = ""
 
     private var pagineFiltrate: [Pagina] {
-        guard let filtro else { return pagine }
-        return pagine.filter { $0.etichette.contains(filtro) }
+        RicercaDiario.filtra(pagine, cerchio: filtro, ricerca: ricerca)
     }
 
     var body: some View {
@@ -38,6 +38,9 @@ struct DiarioView: View {
                         .font(.equinozio(.titoloMedio))
                         .foregroundStyle(Color.inchiostro)
                         .padding(.bottom, S.x4)
+
+                    campoRicerca
+                        .padding(.bottom, S.x3)
 
                     filtroChips
                         .padding(.bottom, S.x4)
@@ -109,6 +112,34 @@ struct DiarioView: View {
                 }
             }
         }
+    }
+
+    private var campoRicerca: some View {
+        HStack(spacing: S.x2) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 14, weight: .light))
+                .foregroundStyle(Color.attenuato)
+            TextField("Cerca nel diario", text: $ricerca)
+                .font(.equinozio(.corpoMedio))
+                .textFieldStyle(.plain)
+                .autocorrectionDisabled()
+            if !ricerca.isEmpty {
+                Button {
+                    ricerca = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color.attenuato)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Cancella ricerca")
+            }
+        }
+        .padding(.horizontal, S.x3)
+        .padding(.vertical, S.x2)
+        .background(Color.superficie)
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(Color.lineaSottile, lineWidth: 1))
     }
 
     private func cancella(_ pagina: Pagina) {
