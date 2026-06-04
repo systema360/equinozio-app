@@ -13,6 +13,7 @@ struct ImpostazioniView: View {
 
     @Environment(\.modelContext) private var contesto
     @Environment(\.dismiss) private var chiudi
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var profili: [Profilo]
 
     @State private var nomeEditabile: String = ""
@@ -232,6 +233,11 @@ struct ImpostazioniView: View {
                 await iCloudService.verifica()
             }
         }
+        .onChange(of: scenePhase) { _, nuovo in
+            if nuovo == .active {
+                Task { await iCloudService.verifica() }
+            }
+        }
         .sheet(isPresented: $manifestoAperto) {
             ManifestoView()
                 .presentationDetents([.large])
@@ -395,10 +401,16 @@ struct ImpostazioniView: View {
     private var sezioneICloud: some View {
         VStack(alignment: .leading, spacing: S.x3) {
             HStack(spacing: S.x3) {
-                Image(systemName: iCloudService.stato.simbolo)
-                    .font(.system(size: 22, weight: .light))
-                    .foregroundStyle(iCloudService.stato.disponibile ? Color.salvia : Color.attenuato)
-                    .frame(width: 28)
+                Group {
+                    if case .sconosciuto = iCloudService.stato {
+                        ProgressView().frame(width: 28)
+                    } else {
+                        Image(systemName: iCloudService.stato.simbolo)
+                            .font(.system(size: 22, weight: .light))
+                            .foregroundStyle(iCloudService.stato.disponibile ? Color.salvia : Color.attenuato)
+                            .frame(width: 28)
+                    }
+                }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(iCloudService.stato.titolo)
