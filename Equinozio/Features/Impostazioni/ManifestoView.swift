@@ -62,7 +62,7 @@ struct ManifestoView: View {
                         "Per scriverci o per collaborare: [systema360.it](https://systema360.it)",
                     ])
 
-                    Text("Fatto con ❤ da Systema360 · 2026")
+                    Text("Fatto con cura da Systema360 · 2026")
                         .font(.equinozio(.etichetta))
                         .tracking(2.0)
                         .textCase(.uppercase)
