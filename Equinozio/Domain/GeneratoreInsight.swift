@@ -36,6 +36,8 @@ public enum GeneratoreInsight {
 
         if let i = bilanciamentoBasso(riflessioni) { risultato.append(i) }
         if let i = dominanzaCerchio(riflessioni) { risultato.append(i) }
+        if let i = crescitaTrend(riflessioni) { risultato.append(i) }
+        if let i = decisioneStorica(decisioni, adesso: adesso) { risultato.append(i) }
 
         return Array(risultato.prefix(3))
     }
@@ -63,5 +65,41 @@ public enum GeneratoreInsight {
             tipo: .dominanzaCerchio,
             testo: "Stai dedicando molto a \(dominante.0.titolo) (\(dominante.1)%). Va bene, se è una scelta consapevole."
         )
+    }
+
+    static func crescitaTrend(_ riflessioni: [Riflessione]) -> InsightGenerato? {
+        guard riflessioni.count >= 2 else { return nil }
+        let delta = riflessioni[0].equilibrio - riflessioni[1].equilibrio
+        guard delta > 0 else { return nil }
+        return InsightGenerato(
+            tipo: .crescitaTrend,
+            testo: "Il tuo equilibrio è in crescita: +\(delta) rispetto alla settimana scorsa."
+        )
+    }
+
+    static func decisioneStorica(_ decisioni: [Decisione], adesso: Date) -> InsightGenerato? {
+        let aperte = decisioni.filter { ($0.decisione ?? "").isEmpty }
+        guard !aperte.isEmpty else { return nil }
+
+        let limite = adesso.addingTimeInterval(7 * 86_400)
+        let inScadenza = aperte.filter { d in
+            guard let scadenza = d.scadenza else { return false }
+            return scadenza <= limite
+        }
+
+        if !inScadenza.isEmpty {
+            let n = inScadenza.count
+            return InsightGenerato(
+                tipo: .decisioneStorica,
+                testo: "Hai \(n) decision\(n == 1 ? "e" : "i") in scadenza. Forse è il momento di chiuderne una."
+            )
+        }
+        if aperte.count >= 3 {
+            return InsightGenerato(
+                tipo: .decisioneStorica,
+                testo: "Hai \(aperte.count) decisioni aperte: rischi di accumularle."
+            )
+        }
+        return nil
     }
 }

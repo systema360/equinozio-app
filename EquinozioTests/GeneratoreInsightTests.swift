@@ -29,4 +29,33 @@ struct GeneratoreInsightTests {
         let insight = GeneratoreInsight.genera(riflessioni: [], decisioni: [], adesso: .now)
         #expect(insight.isEmpty)
     }
+
+    @Test func crescitaTrendQuandoEquilibrioMigliora() {
+        let recente = rifl(30, 25, 25, 20)   // equilibrio più alto
+        let vecchia = rifl(60, 20, 10, 10)   // equilibrio più basso
+        let insight = GeneratoreInsight.genera(riflessioni: [recente, vecchia], decisioni: [], adesso: .now)
+        #expect(insight.contains { $0.tipo == .crescitaTrend })
+    }
+
+    @Test func nessunaCrescitaConUnaSolaRiflessione() {
+        let insight = GeneratoreInsight.genera(riflessioni: [rifl(25, 25, 25, 25)], decisioni: [], adesso: .now)
+        #expect(!insight.contains { $0.tipo == .crescitaTrend })
+    }
+
+    @Test func decisioneStoricaQuandoCeNeSonoInScadenza() {
+        let traDueGiorni = Date(timeIntervalSince1970: 1_000_000 + 2 * 86_400)
+        let adesso = Date(timeIntervalSince1970: 1_000_000)
+        let d = Decisione(titolo: "Offerta", scadenza: traDueGiorni)
+        let insight = GeneratoreInsight.genera(riflessioni: [rifl(25, 25, 25, 25)], decisioni: [d], adesso: adesso)
+        #expect(insight.contains { $0.tipo == .decisioneStorica })
+    }
+
+    @Test func nessunaDecisioneStoricaSeDecisioneChiusa() {
+        let traDueGiorni = Date(timeIntervalSince1970: 1_000_000 + 2 * 86_400)
+        let adesso = Date(timeIntervalSince1970: 1_000_000)
+        let d = Decisione(titolo: "Offerta", scadenza: traDueGiorni)
+        d.decisione = "Accettato"   // chiusa
+        let insight = GeneratoreInsight.genera(riflessioni: [rifl(25, 25, 25, 25)], decisioni: [d], adesso: adesso)
+        #expect(!insight.contains { $0.tipo == .decisioneStorica })
+    }
 }
