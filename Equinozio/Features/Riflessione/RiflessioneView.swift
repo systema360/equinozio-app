@@ -339,6 +339,7 @@ struct RiflessioneView: View {
 
         do {
             try contesto.save()
+            WidgetSnapshot.aggiorna(equilibrio: equilibrioCorrente)
             withAnimation(.easeInOut(duration: 0.3)) {
                 salvataggioFatto = true
             }
