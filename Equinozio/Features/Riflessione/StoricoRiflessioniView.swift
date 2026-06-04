@@ -38,6 +38,7 @@ struct StoricoRiflessioniView: View {
                         bannerIntro
                     }
                     sintesi
+                    notaEquilibrio
                     grafico
                     lista
                 }
@@ -135,6 +136,19 @@ struct StoricoRiflessioniView: View {
         }
     }
 
+    private var notaEquilibrio: some View {
+        HStack(alignment: .top, spacing: S.x2) {
+            Image(systemName: "info.circle")
+                .font(.system(size: 12, weight: .light))
+                .foregroundStyle(Color.attenuato)
+            Text("L'equilibrio è 100% quando il tuo tempo è ripartito 25/25/25/25 tra i quattro cerchi. Più ti allontani da quella ripartizione, più scende.")
+                .font(.equinozio(.corpoMedio))
+                .foregroundStyle(Color.attenuato)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.vertical, S.x1)
+    }
+
     private func statCella(valore: String, etichetta: String, colore: Color) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(valore)
@@ -226,10 +240,16 @@ struct StoricoRiflessioniView: View {
                 .foregroundStyle(Color.attenuato)
 
             if riflessioni.isEmpty {
-                Text("Niente ancora.")
-                    .font(.equinozio(.corpoMedio))
-                    .foregroundStyle(Color.attenuato)
-                    .padding(.vertical, S.x4)
+                VStack(alignment: .leading, spacing: S.x2) {
+                    Text("Niente ancora.")
+                        .font(.equinozio(.titoloPiccolo))
+                        .foregroundStyle(Color.inchiostroTenue)
+                    Text("Le riflessioni che salvi appariranno qui, con il loro andamento nel tempo.")
+                        .font(.equinozio(.corpoMedio))
+                        .foregroundStyle(Color.attenuato)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, S.x4)
             } else {
                 LazyVStack(spacing: S.x2) {
                     ForEach(riflessioni) { r in
