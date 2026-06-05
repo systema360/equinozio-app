@@ -43,50 +43,93 @@ struct EquinozioProvider: TimelineProvider {
     }
 }
 
+// MARK: - Palette dei quattro cerchi (fissa: il widget non condivide l'asset catalog)
+
+private let cerchiEquinozio: [(nome: String, colore: Color)] = [
+    ("Passione", Color(red: 0.827, green: 0.557, blue: 0.549)),
+    ("Talento", Color(red: 0.761, green: 0.745, blue: 0.494)),
+    ("Missione", Color(red: 0.533, green: 0.737, blue: 0.592)),
+    ("Professione", Color(red: 0.510, green: 0.686, blue: 0.776)),
+]
+
 // MARK: - Vista
 
 struct EquinozioWidgetView: View {
+    @Environment(\.widgetFamily) private var famiglia
     var entry: EquinozioEntry
 
-    // Palette dei quattro cerchi (fissa: il widget non condivide l'asset catalog).
-    private let cerchi: [Color] = [
-        Color(red: 0.827, green: 0.557, blue: 0.549),  // Passione
-        Color(red: 0.761, green: 0.745, blue: 0.494),  // Talento
-        Color(red: 0.533, green: 0.737, blue: 0.592),  // Missione
-        Color(red: 0.510, green: 0.686, blue: 0.776),  // Professione
-    ]
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("EQUILIBRIO")
-                .font(.system(size: 10, weight: .medium))
-                .tracking(1.6)
-                .foregroundStyle(.secondary)
-
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text("\(entry.equilibrio)")
-                    .font(.system(size: 46, weight: .thin))
-                    .monospacedDigit()
-                Text("%")
-                    .font(.system(size: 18, weight: .thin))
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer(minLength: 0)
-
-            HStack(spacing: 5) {
-                ForEach(0..<4, id: \.self) { i in
-                    Circle().fill(cerchi[i]).frame(width: 8, height: 8)
-                }
-                Spacer()
-                Text("Equinozio")
-                    .font(.system(size: 11, weight: .light))
-                    .foregroundStyle(.secondary)
+        Group {
+            switch famiglia {
+            case .systemMedium: medio
+            default: piccolo
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(16)
         .containerBackground(.background, for: .widget)
+    }
+
+    // systemSmall: numero + pallini dei cerchi
+    private var piccolo: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            etichetta
+            numero
+            Spacer(minLength: 0)
+            HStack(spacing: 5) {
+                ForEach(cerchiEquinozio.indices, id: \.self) { i in
+                    Circle().fill(cerchiEquinozio[i].colore).frame(width: 8, height: 8)
+                }
+                Spacer()
+                marchio
+            }
+        }
+    }
+
+    // systemMedium: numero a sinistra + legenda dei quattro cerchi a destra
+    private var medio: some View {
+        HStack(alignment: .top, spacing: 18) {
+            VStack(alignment: .leading, spacing: 6) {
+                etichetta
+                numero
+                Spacer(minLength: 0)
+                marchio
+            }
+            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: 9) {
+                ForEach(cerchiEquinozio.indices, id: \.self) { i in
+                    HStack(spacing: 8) {
+                        Circle().fill(cerchiEquinozio[i].colore).frame(width: 8, height: 8)
+                        Text(cerchiEquinozio[i].nome)
+                            .font(.system(size: 13, weight: .light))
+                    }
+                }
+            }
+        }
+    }
+
+    private var etichetta: some View {
+        Text("EQUILIBRIO")
+            .font(.system(size: 10, weight: .medium))
+            .tracking(1.6)
+            .foregroundStyle(.secondary)
+    }
+
+    private var numero: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 2) {
+            Text("\(entry.equilibrio)")
+                .font(.system(size: 46, weight: .thin))
+                .monospacedDigit()
+            Text("%")
+                .font(.system(size: 18, weight: .thin))
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private var marchio: some View {
+        Text("Equinozio")
+            .font(.system(size: 11, weight: .light))
+            .foregroundStyle(.secondary)
     }
 }
 
@@ -102,7 +145,7 @@ struct EquinozioWidget: Widget {
         }
         .configurationDisplayName("Equilibrio")
         .description("Il tuo equilibrio settimanale, sempre a colpo d'occhio.")
-        .supportedFamilies([.systemSmall])
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
@@ -111,4 +154,10 @@ struct EquinozioWidget: Widget {
 } timeline: {
     EquinozioEntry(date: .now, equilibrio: 72)
     EquinozioEntry(date: .now, equilibrio: 38)
+}
+
+#Preview(as: .systemMedium) {
+    EquinozioWidget()
+} timeline: {
+    EquinozioEntry(date: .now, equilibrio: 72)
 }
