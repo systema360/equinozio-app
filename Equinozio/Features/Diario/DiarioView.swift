@@ -112,6 +112,9 @@ struct DiarioView: View {
                     }
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)
+                    .safeAreaInset(edge: .bottom) {
+                        Color.clear.frame(height: S.x8)
+                    }
                 }
             }
             .background(Color.sfondo)
