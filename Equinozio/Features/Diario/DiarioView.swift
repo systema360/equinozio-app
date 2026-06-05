@@ -29,7 +29,7 @@ struct DiarioView: View {
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            ScrollView {
+            VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Diario")
                         .font(.equinozio(.occhiello))
@@ -66,41 +66,53 @@ struct DiarioView: View {
                         .padding(.bottom, S.x3)
 
                     filtroChips
-                        .padding(.bottom, S.x4)
-
-                    if pagineFiltrate.isEmpty {
-                        statoVuoto
-                    } else {
-                        LazyVStack(alignment: .leading, spacing: 0) {
-                            ForEach(pagineFiltrate) { pagina in
-                                Button {
-                                    paginaSelezionata = pagina
-                                } label: {
-                                    PaginaCella(pagina: pagina)
-                                }
-                                .buttonStyle(.plain)
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) {
-                                        cancella(pagina)
-                                    } label: {
-                                        Label("Cancella", systemImage: "trash")
-                                    }
-                                }
-                                .contextMenu {
-                                    Button(role: .destructive) {
-                                        cancella(pagina)
-                                    } label: {
-                                        Label("Cancella pagina", systemImage: "trash")
-                                    }
-                                }
-                                Divider().background(Color.lineaSottile)
-                            }
-                        }
-                    }
+                        .padding(.bottom, S.x3)
                 }
                 .padding(.horizontal, S.x5)
                 .padding(.top, S.x7)
-                .padding(.bottom, 100)
+
+                if pagineFiltrate.isEmpty {
+                    ScrollView {
+                        statoVuoto
+                            .padding(.horizontal, S.x5)
+                    }
+                } else {
+                    List {
+                        ForEach(pagineFiltrate) { pagina in
+                            Button {
+                                paginaSelezionata = pagina
+                            } label: {
+                                PaginaCella(pagina: pagina)
+                            }
+                            .buttonStyle(.plain)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 0, leading: S.x5, bottom: 0, trailing: S.x5))
+                            .listRowBackground(Color.sfondo)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    cancella(pagina)
+                                } label: {
+                                    Label("Cancella", systemImage: "trash")
+                                }
+                            }
+                            .swipeActions(edge: .leading) {
+                                ShareLink(item: pagina.testo) {
+                                    Label("Condividi", systemImage: "square.and.arrow.up")
+                                }
+                                .tint(.salvia)
+                            }
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    cancella(pagina)
+                                } label: {
+                                    Label("Cancella pagina", systemImage: "trash")
+                                }
+                            }
+                        }
+                    }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                }
             }
             .background(Color.sfondo)
 
