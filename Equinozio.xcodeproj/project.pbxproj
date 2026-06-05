@@ -35,6 +35,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		AABB00082FD08DC500EDA9C9 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AABB00092FD08DC500EDA9C9 /* EquinozioWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		AABB00022FD08DC500EDA9C9 /* EquinozioWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquinozioWidget.swift; sourceTree = "<group>"; };
 		AABB00042FD08DC500EDA9C9 /* EquinozioWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EquinozioWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,20 +90,6 @@
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		AABB00082FD08DC500EDA9C9 /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				AABB00092FD08DC500EDA9C9 /* EquinozioWidget.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		AABB00062FD08DC500EDA9C9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -122,6 +122,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AABB000F2FD08DC500EDA9C9 /* EquinozioWidget */ = {
+			isa = PBXGroup;
+			children = (
+				AABB00022FD08DC500EDA9C9 /* EquinozioWidget.swift */,
+				AABB00102FD08DC500EDA9C9 /* Info.plist */,
+				AABB00112FD08DC500EDA9C9 /* EquinozioWidget.entitlements */,
+			);
+			path = EquinozioWidget;
+			sourceTree = "<group>";
+		};
 		E3EF9BD72FD08DC400EDA9C9 = {
 			isa = PBXGroup;
 			children = (
@@ -131,16 +141,6 @@
 				E3EF9BFE2FD08DC500EDA9C9 /* EquinozioUITests */,
 				E3EF9BE12FD08DC400EDA9C9 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		AABB000F2FD08DC500EDA9C9 /* EquinozioWidget */ = {
-			isa = PBXGroup;
-			children = (
-				AABB00022FD08DC500EDA9C9 /* EquinozioWidget.swift */,
-				AABB00102FD08DC500EDA9C9 /* Info.plist */,
-				AABB00112FD08DC500EDA9C9 /* EquinozioWidget.entitlements */,
-			);
-			path = EquinozioWidget;
 			sourceTree = "<group>";
 		};
 		E3EF9BE12FD08DC400EDA9C9 /* Products */ = {
