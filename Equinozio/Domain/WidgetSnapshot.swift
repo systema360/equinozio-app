@@ -22,6 +22,13 @@ public enum WidgetSnapshot {
         difese.set(equilibrio, forKey: chiaveEquilibrio)
     }
 
+    /// Lo Spunto corrente dallo snapshot App Group (nil se assente/vuoto).
+    public static func leggiSpunto() -> String? {
+        guard let difese = UserDefaults(suiteName: suite) else { return nil }
+        let t = (difese.string(forKey: chiaveSpuntoTesto) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        return t.isEmpty ? nil : t
+    }
+
     /// Snapshot completo: equilibrio + Spunto della settimana (per widget e notifica).
     public static func aggiorna(equilibrio: Int, spuntoTesto: String, spuntoTipo: String, settimanaID: String) {
         guard let difese = UserDefaults(suiteName: suite) else { return }

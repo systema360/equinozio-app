@@ -87,6 +87,12 @@ public final class PromemoriaService {
         return calendario.nextDate(after: da, matching: componenti, matchingPolicy: .nextTime)
     }
 
+    /// Corpo della notifica: lo Spunto se presente, altrimenti il messaggio personalizzato.
+    nonisolated public static func corpo(spunto: String?, personalizzato: String) -> String {
+        let s = (spunto ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        return s.isEmpty ? personalizzato : s
+    }
+
     /// Cancella il promemoria settimanale.
     public func cancella() {
         centro.removePendingNotificationRequests(withIdentifiers: [Self.identificatoreRiflessione])

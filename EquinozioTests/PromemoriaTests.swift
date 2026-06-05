@@ -26,4 +26,13 @@ struct PromemoriaTests {
         let prossima = try #require(PromemoriaService.prossimaData(giorno: 1, ora: 19, minuto: 0, da: da, calendario: cal))
         #expect(prossima > da)
     }
+
+    @Test func corpoUsaLoSpuntoSePresente() {
+        #expect(PromemoriaService.corpo(spunto: "Stai migliorando", personalizzato: "fallback") == "Stai migliorando")
+    }
+    @Test func corpoFallbackSeSpuntoVuotoONil() {
+        #expect(PromemoriaService.corpo(spunto: nil, personalizzato: "fallback") == "fallback")
+        #expect(PromemoriaService.corpo(spunto: "", personalizzato: "fallback") == "fallback")
+        #expect(PromemoriaService.corpo(spunto: "   ", personalizzato: "fallback") == "fallback")
+    }
 }
