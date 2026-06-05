@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 @main
 struct EquinozioApp: App {
@@ -96,6 +97,9 @@ struct EquinozioApp: App {
                 if !splashAttiva && protezioneAttiva {
                     richiedeSblocco = true
                 }
+                NotificationeDelegate.shared.onApri = { scheda in router.scheda = scheda }
+                UNUserNotificationCenter.current().delegate = NotificationeDelegate.shared
+                PromemoriaService.shared.registraCategorie()
             }
             .onChange(of: scenePhase) { _, nuovo in
                 gestisciCambioStato(nuovo)
