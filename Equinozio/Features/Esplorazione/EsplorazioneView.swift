@@ -165,6 +165,13 @@ struct EsplorazioneView: View {
                     }
                     ForEach(scelteCustom, id: \.self) { opzione in
                         Scelta(opzione, attiva: bindingFor(opzione))
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    rimuoviCustom(opzione)
+                                } label: {
+                                    Label("Rimuovi", systemImage: "trash")
+                                }
+                            }
                     }
                 }
                 .padding(.bottom, S.x4)
@@ -350,6 +357,12 @@ struct EsplorazioneView: View {
     }
 
     // MARK: - Azioni
+
+    private func rimuoviCustom(_ opzione: String) {
+        var s = sceltePerCerchio[tipoCorrente] ?? []
+        s.remove(opzione)
+        sceltePerCerchio[tipoCorrente] = s
+    }
 
     private func aggiungiCustom() {
         let testo = (aggiunte[tipoCorrente] ?? "").trimmingCharacters(in: .whitespaces)
