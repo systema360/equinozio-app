@@ -17,6 +17,7 @@ struct EquinozioApp: App {
     @AppStorage("protezioneBiometrica") private var protezioneAttiva: Bool = false
     @AppStorage("primoAvvioFatto") private var primoAvvioFatto: Bool = false
 
+    @State private var router = AppRouter()
     @State private var splashAttiva: Bool
     @State private var richiedeSblocco: Bool = false
 
@@ -61,6 +62,7 @@ struct EquinozioApp: App {
         WindowGroup {
             ZStack {
                 ContenitoreView()
+                    .environment(router)
                     .tint(.salvia)
 
                 if richiedeSblocco {
@@ -97,6 +99,11 @@ struct EquinozioApp: App {
             }
             .onChange(of: scenePhase) { _, nuovo in
                 gestisciCambioStato(nuovo)
+            }
+            .onOpenURL { url in
+                if let scheda = Scheda.fromDeepLink(url) {
+                    router.scheda = scheda
+                }
             }
         }
         .modelContainer(modelContainer)

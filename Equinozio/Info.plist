@@ -15,5 +15,16 @@
 	<string>Equinozio usa Face ID per proteggere il tuo diario quando l'app è bloccata.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>it.systema360.equinozio</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>equinozio</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

@@ -24,9 +24,13 @@ struct ContenitoreView: View {
     @Query private var cerchi: [Cerchio]
     @Query private var elementi: [Elemento]
 
-    @State private var schedaAttiva: Scheda = .mappa
+    @Environment(AppRouter.self) private var router
     @State private var esplorazioneAperta = false
     @AppStorage("esplorazioneCompletata") private var esplorazioneCompletata: Bool = false
+
+    private var selezione: Binding<Scheda> {
+        Binding(get: { router.scheda }, set: { router.scheda = $0 })
+    }
 
     var body: some View {
         Group {
@@ -61,7 +65,7 @@ struct ContenitoreView: View {
 
     #if !os(macOS)
     private var tabView: some View {
-        TabView(selection: $schedaAttiva) {
+        TabView(selection: selezione) {
             MappaView()
                 .tabItem { Label("Mappa", systemImage: "circle.grid.2x2.fill") }
                 .tag(Scheda.mappa)
@@ -86,8 +90,8 @@ struct ContenitoreView: View {
     private var sidebarView: some View {
         NavigationSplitView {
             List(selection: Binding(
-                get: { schedaAttiva as Scheda? },
-                set: { if let s = $0 { schedaAttiva = s } }
+                get: { router.scheda as Scheda? },
+                set: { if let s = $0 { router.scheda = s } }
             )) {
                 Label("Mappa", systemImage: "circle.grid.2x2.fill").tag(Scheda.mappa)
                 Label("Diario", systemImage: "book.closed").tag(Scheda.diario)
@@ -97,7 +101,7 @@ struct ContenitoreView: View {
             .navigationTitle("Equinozio")
             .navigationSplitViewColumnWidth(min: 200, ideal: 220)
         } detail: {
-            switch schedaAttiva {
+            switch router.scheda {
             case .mappa:        MappaView()
             case .diario:       DiarioView()
             case .riflessione:  RiflessioneView()
@@ -129,6 +133,7 @@ struct ContenitoreView: View {
 
 #Preview {
     ContenitoreView()
+        .environment(AppRouter())
         .modelContainer(for: [
             Profilo.self, Cerchio.self, Elemento.self,
             Pagina.self, Riflessione.self, Decisione.self, Insight.self,
