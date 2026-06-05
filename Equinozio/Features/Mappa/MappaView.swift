@@ -17,6 +17,7 @@ struct MappaView: View {
     @Query(filter: #Predicate<Pagina> { !$0.isCancellata },
            sort: \Pagina.dataCreazione, order: .reverse) private var pagine: [Pagina]
     @Query(sort: \Decisione.dataAggiunta, order: .reverse) private var decisioni: [Decisione]
+    @Query(sort: \Insight.dataGenerazione, order: .reverse) private var insightCache: [Insight]
 
     @State private var impostazioniAperte = false
 
@@ -31,7 +32,11 @@ struct MappaView: View {
         decisioni.filter { $0.decisione?.isEmpty != false }.prefix(2).map { $0 }
     }
     private var insight: [InsightGenerato] {
-        GeneratoreInsight.genera(riflessioni: riflessioni, decisioni: decisioni, adesso: .now)
+        let regole = GeneratoreInsight.genera(riflessioni: riflessioni, decisioni: decisioni, adesso: .now)
+        let sid = Settimana.id(per: .now)
+        let cache = insightCache.first { $0.settimanaID == sid }
+        let principale = cache.map { InsightGenerato(tipo: $0.tipo, testo: $0.testo) }
+        return MotoreSpunti.spuntiMappa(principale: principale, regole: regole)
     }
 
     var body: some View {
