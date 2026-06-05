@@ -18,6 +18,7 @@ public struct QuattroCerchi: View {
     public let respira: Bool
 
     @State private var inEspirazione: Bool = false
+    @Environment(\.colorScheme) private var schema
 
     public init(mostraEtichette: Bool = true, respira: Bool = true) {
         self.mostraEtichette = mostraEtichette
@@ -35,8 +36,15 @@ public struct QuattroCerchi: View {
 
             ZStack {
                 Canvas { ctx, _ in
-                    ctx.blendMode = .multiply
-                    let opacita = respira && inEspirazione ? 0.86 : 0.78
+                    // In light il `multiply` scurisce le sovrapposizioni (Venn classico).
+                    // Su sfondo scuro `multiply` annerirebbe i cerchi fino a farli sparire:
+                    // passiamo a `screen`, che schiarisce sul fondo scuro mantenendo la
+                    // stessa logica additiva delle sovrapposizioni.
+                    let scuro = schema == .dark
+                    ctx.blendMode = scuro ? .screen : .multiply
+                    let opacita = respira && inEspirazione
+                        ? (scuro ? 0.92 : 0.86)
+                        : (scuro ? 0.82 : 0.78)
                     let posizioni: [(CGPoint, Color)] = [
                         (CGPoint(x: centro.x - distanzaCentri, y: centro.y - distanzaCentri), .passione),
                         (CGPoint(x: centro.x + distanzaCentri, y: centro.y - distanzaCentri), .talento),
