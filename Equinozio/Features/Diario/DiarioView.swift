@@ -20,6 +20,8 @@ struct DiarioView: View {
     @State private var ricerca = ""
     @State private var ultimaCancellata: Pagina?
     @State private var mostraUndo = false
+    @State private var riassunto: String?
+    @State private var riassumendo = false
 
     private var pagineFiltrate: [Pagina] {
         RicercaDiario.filtra(pagine, cerchio: filtro, ricerca: ricerca)
@@ -53,6 +55,11 @@ struct DiarioView: View {
                             .foregroundStyle(Color.salvia)
                         }
                         .padding(.bottom, S.x4)
+                    }
+
+                    if #available(iOS 26.0, *), !RiassuntoDiario.pagineSettimana(pagine, adesso: .now).isEmpty {
+                        bloccoRiassunto
+                            .padding(.bottom, S.x4)
                     }
 
                     campoRicerca
@@ -182,6 +189,52 @@ struct DiarioView: View {
         .background(Color.superficie)
         .clipShape(Capsule())
         .overlay(Capsule().stroke(Color.lineaSottile, lineWidth: 1))
+    }
+
+    @available(iOS 26.0, *)
+    private var bloccoRiassunto: some View {
+        VStack(alignment: .leading, spacing: S.x2) {
+            Button {
+                Task { await generaRiassunto() }
+            } label: {
+                HStack(spacing: 6) {
+                    if riassumendo {
+                        ProgressView().scaleEffect(0.7).frame(width: 14, height: 14)
+                    } else {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 12, weight: .medium))
+                    }
+                    Text("RIASSUMI LA SETTIMANA")
+                        .font(.equinozio(.etichetta))
+                        .tracking(1.6)
+                }
+                .foregroundStyle(Color.salvia)
+            }
+            .buttonStyle(.plain)
+            .disabled(riassumendo)
+
+            if let riassunto, !riassunto.isEmpty {
+                Text(riassunto)
+                    .font(.equinozio(.corpoMedio))
+                    .foregroundStyle(Color.inchiostro)
+                    .padding(S.x4)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.superficie)
+                    .clipShape(RoundedRectangle(cornerRadius: R.r2))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: R.r2)
+                            .stroke(Color.lineaSottile, lineWidth: 1)
+                    )
+            }
+        }
+    }
+
+    @available(iOS 26.0, *)
+    private func generaRiassunto() async {
+        riassumendo = true
+        defer { riassumendo = false }
+        let pagineSettimana = RiassuntoDiario.pagineSettimana(pagine, adesso: .now)
+        riassunto = await RiassuntoDiarioService.shared.riassumi(pagineSettimana)
     }
 
     private func cancella(_ pagina: Pagina) {
