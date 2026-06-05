@@ -36,30 +36,44 @@ struct DecisioneView: View {
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            ScrollView {
+            VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     intestazione
-
-                    selettoreModalita
-                        .padding(.top, S.x4)
-
-                    if elencoCorrente.isEmpty {
-                        statoVuoto
-                    } else {
-                        LazyVStack(spacing: S.x3) {
-                            ForEach(elencoCorrente) { d in
-                                DecisioneCella(decisione: d)
-                                    .onTapGesture {
-                                        decisioneSelezionata = d
-                                    }
-                            }
-                        }
-                        .padding(.top, S.x4)
-                    }
+                    selettoreModalita.padding(.top, S.x4)
                 }
                 .padding(.horizontal, S.x5)
                 .padding(.top, S.x7)
-                .padding(.bottom, 100)
+                .padding(.bottom, S.x3)
+
+                if elencoCorrente.isEmpty {
+                    ScrollView { statoVuoto.padding(.horizontal, S.x5) }
+                } else {
+                    List {
+                        ForEach(elencoCorrente) { d in
+                            DecisioneCella(decisione: d)
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(EdgeInsets(top: S.x2, leading: S.x5, bottom: S.x2, trailing: S.x5))
+                                .listRowBackground(Color.sfondo)
+                                .contentShape(Rectangle())
+                                .onTapGesture { decisioneSelezionata = d }
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) { cancella(d) } label: {
+                                        Label("Cancella", systemImage: "trash")
+                                    }
+                                }
+                                .swipeActions(edge: .leading) {
+                                    if modalità == .archivio {
+                                        Button { riapri(d) } label: {
+                                            Label("Riapri", systemImage: "arrow.uturn.backward")
+                                        }
+                                        .tint(.salvia)
+                                    }
+                                }
+                        }
+                    }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                }
             }
             .background(Color.sfondo)
 
@@ -81,6 +95,14 @@ struct DecisioneView: View {
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
+    }
+
+    private func cancella(_ d: Decisione) {
+        withAnimation { contesto.delete(d); try? contesto.save() }
+    }
+
+    private func riapri(_ d: Decisione) {
+        withAnimation { d.decisione = nil; try? contesto.save() }
     }
 
     private var intestazione: some View {
