@@ -54,11 +54,31 @@ struct ImpostazioniView: View {
                             .padding(.top, S.x2)
                     }
 
-                    sezione(occhiello: "Aspetto", titolo: "Tema dell'applicazione") {
-                        VStack(spacing: S.x2) {
-                            ForEach(SchemaPreferito.allCases) { tema in
-                                temaCella(tema)
+                    sezione(occhiello: "Aspetto", titolo: "Equinozio sceglie la luce") {
+                        VStack(alignment: .leading, spacing: S.x3) {
+                            HStack(spacing: S.x3) {
+                                Image(systemName: "sun.max")
+                                    .font(.system(size: 22, weight: .light))
+                                    .foregroundStyle(Color.salvia)
+                                    .frame(width: 32)
+
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Sempre carta calda")
+                                        .font(.equinozio(.corpo))
+                                        .foregroundStyle(Color.inchiostro)
+                                    Text("Il bilanciamento si guarda di giorno, con lo sguardo riposato. Per scelta, Equinozio non ha modalità scura.")
+                                        .font(.equinozio(.corpoMedio))
+                                        .foregroundStyle(Color.attenuato)
+                                }
                             }
+                            .padding(S.x4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.superficie)
+                            .clipShape(RoundedRectangle(cornerRadius: R.r1))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: R.r1)
+                                    .stroke(Color.lineaSottile, lineWidth: 1)
+                            )
                         }
                     }
 

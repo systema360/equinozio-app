@@ -15,9 +15,16 @@ struct EquinozioApp: App {
 
     @AppStorage("schemaPreferito") private var schemaPreferito: SchemaPreferito = .sistema
     @AppStorage("protezioneBiometrica") private var protezioneAttiva: Bool = false
+    @AppStorage("primoAvvioFatto") private var primoAvvioFatto: Bool = false
 
-    @State private var splashAttiva: Bool = true
+    @State private var splashAttiva: Bool
     @State private var richiedeSblocco: Bool = false
+
+    init() {
+        // Splash animato solo al primo avvio dopo installazione (HIG: niente splash ricorrenti).
+        let primo = UserDefaults.standard.bool(forKey: "primoAvvioFatto")
+        _splashAttiva = State(initialValue: !primo)
+    }
 
     var modelContainer: ModelContainer = {
         let schema = Schema([
@@ -72,6 +79,7 @@ struct EquinozioApp: App {
                 if splashAttiva {
                     SplashScreenView(onTerminato: {
                         splashAttiva = false
+                        primoAvvioFatto = true
                         if protezioneAttiva {
                             richiedeSblocco = true
                         }
@@ -80,7 +88,13 @@ struct EquinozioApp: App {
                     .zIndex(2)
                 }
             }
-            .preferredColorScheme(schemaPreferito.colorScheme)
+            .preferredColorScheme(.light)
+            .onAppear {
+                // Se lo splash è saltato (avvii successivi al primo) richiedo subito lo sblocco.
+                if !splashAttiva && protezioneAttiva {
+                    richiedeSblocco = true
+                }
+            }
             .onChange(of: scenePhase) { _, nuovo in
                 gestisciCambioStato(nuovo)
             }
