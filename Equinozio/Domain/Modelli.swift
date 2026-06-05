@@ -176,6 +176,7 @@ public final class Insight {
     public var tipoRaw: String = TipoInsight.bilanciamentoBasso.rawValue
     public var testo: String = ""
     public var dataGenerazione: Date = Date.distantPast
+    public var settimanaID: String = ""
 
     public var tipo: TipoInsight {
         TipoInsight(rawValue: tipoRaw) ?? .bilanciamentoBasso
