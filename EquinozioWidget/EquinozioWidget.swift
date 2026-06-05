@@ -18,19 +18,20 @@ private let chiaveEquilibrio = "equilibrioCorrente"
 struct EquinozioEntry: TimelineEntry {
     let date: Date
     let equilibrio: Int
+    let spunto: String
 }
 
 struct EquinozioProvider: TimelineProvider {
     func placeholder(in context: Context) -> EquinozioEntry {
-        EquinozioEntry(date: .now, equilibrio: 72)
+        EquinozioEntry(date: .now, equilibrio: 72, spunto: "Settimana in equilibrio.")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (EquinozioEntry) -> Void) {
-        completion(EquinozioEntry(date: .now, equilibrio: leggiEquilibrio()))
+        completion(EquinozioEntry(date: .now, equilibrio: leggiEquilibrio(), spunto: leggiSpunto()))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<EquinozioEntry>) -> Void) {
-        let entry = EquinozioEntry(date: .now, equilibrio: leggiEquilibrio())
+        let entry = EquinozioEntry(date: .now, equilibrio: leggiEquilibrio(), spunto: leggiSpunto())
         // Aggiornamento di cortesia ogni ora (l'app aggiorna lo snapshot al salvataggio).
         completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(3600))))
     }
@@ -40,6 +41,10 @@ struct EquinozioProvider: TimelineProvider {
               let valore = difese.object(forKey: chiaveEquilibrio) as? Int
         else { return 50 }
         return valore
+    }
+
+    private func leggiSpunto() -> String {
+        UserDefaults(suiteName: gruppoCondiviso)?.string(forKey: "spuntoTesto") ?? ""
     }
 }
 
@@ -69,6 +74,7 @@ struct EquinozioWidgetView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(famiglia == .systemSmall ? 16 : 20)
         .containerBackground(.background, for: .widget)
+        .widgetURL(URL(string: "equinozio://riflessione"))
     }
 
     // systemSmall: numero + pallini dei cerchi
@@ -93,6 +99,12 @@ struct EquinozioWidgetView: View {
             VStack(alignment: .leading, spacing: 6) {
                 etichetta
                 numero
+                if !entry.spunto.isEmpty {
+                    Text(entry.spunto)
+                        .font(.system(size: 12, weight: .light))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(3)
+                }
                 Spacer(minLength: 0)
                 marchio
             }
@@ -123,6 +135,13 @@ struct EquinozioWidgetView: View {
             }
 
             Divider()
+
+            if !entry.spunto.isEmpty {
+                Text(entry.spunto)
+                    .font(.system(size: 12, weight: .light))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(4)
+            }
 
             VStack(alignment: .leading, spacing: 13) {
                 ForEach(cerchiEquinozio.indices, id: \.self) { i in
@@ -183,18 +202,18 @@ struct EquinozioWidget: Widget {
 #Preview(as: .systemSmall) {
     EquinozioWidget()
 } timeline: {
-    EquinozioEntry(date: .now, equilibrio: 72)
-    EquinozioEntry(date: .now, equilibrio: 38)
+    EquinozioEntry(date: .now, equilibrio: 72, spunto: "")
+    EquinozioEntry(date: .now, equilibrio: 38, spunto: "")
 }
 
 #Preview(as: .systemMedium) {
     EquinozioWidget()
 } timeline: {
-    EquinozioEntry(date: .now, equilibrio: 72)
+    EquinozioEntry(date: .now, equilibrio: 72, spunto: "Settimana in equilibrio.")
 }
 
 #Preview(as: .systemLarge) {
     EquinozioWidget()
 } timeline: {
-    EquinozioEntry(date: .now, equilibrio: 72)
+    EquinozioEntry(date: .now, equilibrio: 72, spunto: "Settimana in equilibrio.")
 }
