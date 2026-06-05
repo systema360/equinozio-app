@@ -10,6 +10,7 @@
 
 import Foundation
 import SwiftData
+import UserNotifications
 import WidgetKit
 
 @MainActor
@@ -52,6 +53,24 @@ public enum SpuntoStore {
             settimanaID: sid
         )
         WidgetCenter.shared.reloadAllTimelines()
+
+        // Se il promemoria è attivo, aggiorna la notifica col nuovo Spunto.
+        let difese = UserDefaults.standard
+        if difese.bool(forKey: "promemoriaRiflessione") {
+            let stato = await PromemoriaService.shared.statoAutorizzazione()
+            if stato == .authorized || stato == .provisional {
+                let giorno = difese.object(forKey: "promemoriaGiorno") as? Int ?? 1
+                let ora = difese.object(forKey: "promemoriaOra") as? Int ?? 19
+                let minuto = difese.object(forKey: "promemoriaMinuto") as? Int ?? 0
+                let personalizzato = difese.string(forKey: "promemoriaTesto")
+                    ?? "Cinque minuti per la tua riflessione settimanale."
+                await PromemoriaService.shared.schedulaRiflessione(
+                    giorno: giorno, ora: ora, minuto: minuto,
+                    titolo: "Riflessione settimanale",
+                    corpo: PromemoriaService.corpo(spunto: spunto.testo, personalizzato: personalizzato)
+                )
+            }
+        }
     }
 
     /// Rigenera solo se non c'è già uno Spunto per la settimana corrente (usata all'apertura app).

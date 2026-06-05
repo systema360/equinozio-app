@@ -334,7 +334,8 @@ struct ImpostazioniView: View {
         guard stato == .authorized || stato == .provisional else { return }
         await PromemoriaService.shared.schedulaRiflessione(
             giorno: promemoriaGiorno, ora: promemoriaOra, minuto: promemoriaMinuto,
-            titolo: "Riflessione settimanale", corpo: promemoriaTesto
+            titolo: "Riflessione settimanale",
+            corpo: PromemoriaService.corpo(spunto: WidgetSnapshot.leggiSpunto(), personalizzato: promemoriaTesto)
         )
     }
 
