@@ -18,6 +18,24 @@ public final class PromemoriaService {
     private let centro = UNUserNotificationCenter.current()
 
     public static let identificatoreRiflessione = "settimanale.riflessione"
+    public static let categoriaRiflessione = "RIFLESSIONE_SETTIMANALE"
+    public static let azioneRifletti = "RIFLETTI_ORA"
+
+    /// Registra la categoria con l'azione "Rifletti ora". Chiamare una volta all'avvio.
+    public func registraCategorie() {
+        let azione = UNNotificationAction(
+            identifier: Self.azioneRifletti,
+            title: "Rifletti ora",
+            options: [.foreground]
+        )
+        let categoria = UNNotificationCategory(
+            identifier: Self.categoriaRiflessione,
+            actions: [azione],
+            intentIdentifiers: [],
+            options: []
+        )
+        centro.setNotificationCategories([categoria])
+    }
 
     private init() {}
 
@@ -54,6 +72,7 @@ public final class PromemoriaService {
         contenuto.body = corpo
         contenuto.sound = .default
         contenuto.threadIdentifier = "riflessione"
+        contenuto.categoryIdentifier = Self.categoriaRiflessione
 
         var componenti = DateComponents()
         componenti.weekday = giorno
