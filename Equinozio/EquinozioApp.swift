@@ -88,7 +88,7 @@ struct EquinozioApp: App {
                     .zIndex(2)
                 }
             }
-            .preferredColorScheme(.light)
+            .preferredColorScheme(schemaPreferito.colorScheme)
             .onAppear {
                 // Se lo splash è saltato (avvii successivi al primo) richiedo subito lo sblocco.
                 if !splashAttiva && protezioneAttiva {

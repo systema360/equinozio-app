@@ -42,7 +42,6 @@ struct ManifestoView: View {
                     sezione(numero: "04", titolo: "Perché Equinozio", paragrafi: [
                         "Equinozio è il momento dell'anno in cui giorno e notte si equivalgono — il punto in cui due forze opposte trovano la stessa misura. È la stessa cosa che accade quando i quattro cerchi si bilanciano nella tua vita.",
                         "L'anno ha quattro momenti cardine — due equinozi e due solstizi — che dividono il ciclo in quattro stagioni. Quattro momenti, quattro stagioni, quattro cerchi. La simmetria non è casuale.",
-                        "**Equinozio sceglie la luce.** L'app vive su carta calda, non in modalità scura. È una scelta identitaria: il bilanciamento si guarda di giorno, con lo sguardo riposato.",
                     ])
 
                     sezione(numero: "05", titolo: "Sempre gratuita", paragrafi: [
