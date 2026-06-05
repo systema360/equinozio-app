@@ -1,0 +1,64 @@
+//
+//  SpuntoStore.swift
+//  Equinozio · Domain
+//
+//  Genera lo Spunto della settimana UNA volta e lo mette in cache:
+//  · @Model Insight (sincronizzato iCloud)
+//  · snapshot App Group (per il widget)
+//  e ricarica le timeline del widget.
+//
+
+import Foundation
+import SwiftData
+import WidgetKit
+
+@MainActor
+public enum SpuntoStore {
+
+    nonisolated public static func esisteSpunto(per settimanaID: String, in insights: [Insight]) -> Bool {
+        insights.contains { $0.settimanaID == settimanaID }
+    }
+
+    /// Forza la rigenerazione per la settimana corrente (usata al salvataggio di una Riflessione).
+    public static func rigenera(contesto: ModelContext, adesso: Date = .now) async {
+        let sid = Settimana.id(per: adesso)
+        let esistenti = (try? contesto.fetch(FetchDescriptor<Insight>())) ?? []
+        for vecchio in esistenti where vecchio.settimanaID == sid {
+            contesto.delete(vecchio)
+        }
+
+        let riflessioni = (try? contesto.fetch(
+            FetchDescriptor<Riflessione>(sortBy: [SortDescriptor(\.data, order: .reverse)])
+        )) ?? []
+        let decisioni = (try? contesto.fetch(FetchDescriptor<Decisione>())) ?? []
+
+        guard let spunto = await MotoreSpunti.shared.spuntoPrincipale(
+            riflessioni: riflessioni, decisioni: decisioni, adesso: adesso
+        ) else {
+            try? contesto.save()
+            return
+        }
+
+        let modello = Insight(tipo: spunto.tipo, testo: spunto.testo)
+        modello.settimanaID = sid
+        contesto.insert(modello)
+        try? contesto.save()
+
+        let equilibrio = riflessioni.first?.equilibrio ?? 50
+        WidgetSnapshot.aggiorna(
+            equilibrio: equilibrio,
+            spuntoTesto: spunto.testo,
+            spuntoTipo: spunto.tipo.rawValue,
+            settimanaID: sid
+        )
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Rigenera solo se non c'è già uno Spunto per la settimana corrente (usata all'apertura app).
+    public static func aggiornaSeNecessario(contesto: ModelContext, adesso: Date = .now) async {
+        let sid = Settimana.id(per: adesso)
+        let esistenti = (try? contesto.fetch(FetchDescriptor<Insight>())) ?? []
+        if esisteSpunto(per: sid, in: esistenti) { return }
+        await rigenera(contesto: contesto, adesso: adesso)
+    }
+}
