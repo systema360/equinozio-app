@@ -61,12 +61,13 @@ struct EquinozioWidgetView: View {
     var body: some View {
         Group {
             switch famiglia {
+            case .systemLarge: grande
             case .systemMedium: medio
             default: piccolo
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .padding(16)
+        .padding(famiglia == .systemSmall ? 16 : 20)
         .containerBackground(.background, for: .widget)
     }
 
@@ -108,6 +109,36 @@ struct EquinozioWidgetView: View {
         }
     }
 
+    // systemLarge: numero grande + i quattro cerchi con nome e descrizione breve
+    private var grande: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            etichetta
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text("\(entry.equilibrio)")
+                    .font(.system(size: 68, weight: .thin))
+                    .monospacedDigit()
+                Text("%")
+                    .font(.system(size: 24, weight: .thin))
+                    .foregroundStyle(.secondary)
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 13) {
+                ForEach(cerchiEquinozio.indices, id: \.self) { i in
+                    HStack(spacing: 10) {
+                        Circle().fill(cerchiEquinozio[i].colore).frame(width: 10, height: 10)
+                        Text(cerchiEquinozio[i].nome)
+                            .font(.system(size: 16, weight: .light))
+                    }
+                }
+            }
+
+            Spacer(minLength: 0)
+            marchio
+        }
+    }
+
     private var etichetta: some View {
         Text("EQUILIBRIO")
             .font(.system(size: 10, weight: .medium))
@@ -145,7 +176,7 @@ struct EquinozioWidget: Widget {
         }
         .configurationDisplayName("Equilibrio")
         .description("Il tuo equilibrio settimanale, sempre a colpo d'occhio.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
@@ -157,6 +188,12 @@ struct EquinozioWidget: Widget {
 }
 
 #Preview(as: .systemMedium) {
+    EquinozioWidget()
+} timeline: {
+    EquinozioEntry(date: .now, equilibrio: 72)
+}
+
+#Preview(as: .systemLarge) {
     EquinozioWidget()
 } timeline: {
     EquinozioEntry(date: .now, equilibrio: 72)
