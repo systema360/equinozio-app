@@ -6,7 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AABB00032FD08DC500EDA9C9 /* EquinozioWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00022FD08DC500EDA9C9 /* EquinozioWidget.swift */; };
+		AABB00092FD08DC500EDA9C9 /* EquinozioWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AABB00042FD08DC500EDA9C9 /* EquinozioWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		AABB000A2FD08DC500EDA9C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E3EF9BD82FD08DC400EDA9C9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AABB00012FD08DC500EDA9C9;
+			remoteInfo = EquinozioWidget;
+		};
 		E3EF9BF22FD08DC500EDA9C9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E3EF9BD82FD08DC400EDA9C9 /* Project object */;
@@ -24,6 +36,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AABB00022FD08DC500EDA9C9 /* EquinozioWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquinozioWidget.swift; sourceTree = "<group>"; };
+		AABB00042FD08DC500EDA9C9 /* EquinozioWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EquinozioWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AABB00102FD08DC500EDA9C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AABB00112FD08DC500EDA9C9 /* EquinozioWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EquinozioWidget.entitlements; sourceTree = "<group>"; };
 		E3EF9BE02FD08DC400EDA9C9 /* Equinozio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Equinozio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3EF9BF12FD08DC500EDA9C9 /* EquinozioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EquinozioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3EF9BFB2FD08DC500EDA9C9 /* EquinozioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EquinozioUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,7 +76,28 @@
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		AABB00082FD08DC500EDA9C9 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AABB00092FD08DC500EDA9C9 /* EquinozioWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFrameworksBuildPhase section */
+		AABB00062FD08DC500EDA9C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E3EF9BDD2FD08DC400EDA9C9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -89,10 +126,21 @@
 			isa = PBXGroup;
 			children = (
 				E3EF9BE22FD08DC400EDA9C9 /* Equinozio */,
+				AABB000F2FD08DC500EDA9C9 /* EquinozioWidget */,
 				E3EF9BF42FD08DC500EDA9C9 /* EquinozioTests */,
 				E3EF9BFE2FD08DC500EDA9C9 /* EquinozioUITests */,
 				E3EF9BE12FD08DC400EDA9C9 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		AABB000F2FD08DC500EDA9C9 /* EquinozioWidget */ = {
+			isa = PBXGroup;
+			children = (
+				AABB00022FD08DC500EDA9C9 /* EquinozioWidget.swift */,
+				AABB00102FD08DC500EDA9C9 /* Info.plist */,
+				AABB00112FD08DC500EDA9C9 /* EquinozioWidget.entitlements */,
+			);
+			path = EquinozioWidget;
 			sourceTree = "<group>";
 		};
 		E3EF9BE12FD08DC400EDA9C9 /* Products */ = {
@@ -101,6 +149,7 @@
 				E3EF9BE02FD08DC400EDA9C9 /* Equinozio.app */,
 				E3EF9BF12FD08DC500EDA9C9 /* EquinozioTests.xctest */,
 				E3EF9BFB2FD08DC500EDA9C9 /* EquinozioUITests.xctest */,
+				AABB00042FD08DC500EDA9C9 /* EquinozioWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,6 +157,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AABB00012FD08DC500EDA9C9 /* EquinozioWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AABB000C2FD08DC500EDA9C9 /* Build configuration list for PBXNativeTarget "EquinozioWidget" */;
+			buildPhases = (
+				AABB00052FD08DC500EDA9C9 /* Sources */,
+				AABB00062FD08DC500EDA9C9 /* Frameworks */,
+				AABB00072FD08DC500EDA9C9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EquinozioWidget;
+			packageProductDependencies = (
+			);
+			productName = EquinozioWidget;
+			productReference = AABB00042FD08DC500EDA9C9 /* EquinozioWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		E3EF9BDF2FD08DC400EDA9C9 /* Equinozio */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E3EF9C042FD08DC500EDA9C9 /* Build configuration list for PBXNativeTarget "Equinozio" */;
@@ -115,10 +183,12 @@
 				E3EF9BDC2FD08DC400EDA9C9 /* Sources */,
 				E3EF9BDD2FD08DC400EDA9C9 /* Frameworks */,
 				E3EF9BDE2FD08DC400EDA9C9 /* Resources */,
+				AABB00082FD08DC500EDA9C9 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AABB000B2FD08DC500EDA9C9 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				E3EF9BE22FD08DC400EDA9C9 /* Equinozio */,
@@ -186,6 +256,10 @@
 				LastSwiftUpdateCheck = 2650;
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
+					AABB00012FD08DC500EDA9C9 = {
+						CreatedOnToolsVersion = 26.5;
+						ProvisioningStyle = Automatic;
+					};
 					E3EF9BDF2FD08DC400EDA9C9 = {
 						CreatedOnToolsVersion = 26.5;
 					};
@@ -214,6 +288,7 @@
 			projectRoot = "";
 			targets = (
 				E3EF9BDF2FD08DC400EDA9C9 /* Equinozio */,
+				AABB00012FD08DC500EDA9C9 /* EquinozioWidget */,
 				E3EF9BF02FD08DC500EDA9C9 /* EquinozioTests */,
 				E3EF9BFA2FD08DC500EDA9C9 /* EquinozioUITests */,
 			);
@@ -221,6 +296,13 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AABB00072FD08DC500EDA9C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E3EF9BDE2FD08DC400EDA9C9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,6 +327,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AABB00052FD08DC500EDA9C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AABB00032FD08DC500EDA9C9 /* EquinozioWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E3EF9BDC2FD08DC400EDA9C9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -269,6 +359,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AABB000B2FD08DC500EDA9C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AABB00012FD08DC500EDA9C9 /* EquinozioWidget */;
+			targetProxy = AABB000A2FD08DC500EDA9C9 /* PBXContainerItemProxy */;
+		};
 		E3EF9BF32FD08DC500EDA9C9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E3EF9BDF2FD08DC400EDA9C9 /* Equinozio */;
@@ -282,6 +377,64 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		AABB000D2FD08DC500EDA9C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = EquinozioWidget/EquinozioWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VLH2UP6AX9;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EquinozioWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Equinozio;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = it.systema360.equinozio.EquinozioWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AABB000E2FD08DC500EDA9C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = EquinozioWidget/EquinozioWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VLH2UP6AX9;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EquinozioWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Equinozio;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = it.systema360.equinozio.EquinozioWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		E3EF9C052FD08DC500EDA9C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -597,6 +750,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AABB000C2FD08DC500EDA9C9 /* Build configuration list for PBXNativeTarget "EquinozioWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABB000D2FD08DC500EDA9C9 /* Debug */,
+				AABB000E2FD08DC500EDA9C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E3EF9BDB2FD08DC400EDA9C9 /* Build configuration list for PBXProject "Equinozio" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
