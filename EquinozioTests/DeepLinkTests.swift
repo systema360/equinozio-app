@@ -19,4 +19,10 @@ struct DeepLinkTests {
         #expect(Scheda.from(host: "ignota") == nil)
         #expect(Scheda.from(host: nil) == nil)
     }
+    @Test func insightInstradaAllaScheda() {
+        #expect(Scheda.perInsight(.bilanciamentoBasso) == .riflessione)
+        #expect(Scheda.perInsight(.dominanzaCerchio) == .riflessione)
+        #expect(Scheda.perInsight(.crescitaTrend) == .riflessione)
+        #expect(Scheda.perInsight(.decisioneStorica) == .decisione)
+    }
 }

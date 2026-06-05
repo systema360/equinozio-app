@@ -19,6 +19,7 @@ struct MappaView: View {
     @Query(sort: \Decisione.dataAggiunta, order: .reverse) private var decisioni: [Decisione]
     @Query(sort: \Insight.dataGenerazione, order: .reverse) private var insightCache: [Insight]
 
+    @Environment(AppRouter.self) private var router
     @State private var impostazioniAperte = false
 
     private var nome: String { profili.first?.nome ?? "" }
@@ -44,7 +45,7 @@ struct MappaView: View {
             VStack(alignment: .leading, spacing: S.x5) {
                 intestazione
                 bloccoEquilibrio
-                BloccoInsight(insight: insight)
+                BloccoInsight(insight: insight) { tipo in router.scheda = Scheda.perInsight(tipo) }
                 bloccoDiagramma
                 bloccoAttività
             }
@@ -177,26 +178,35 @@ struct MappaView: View {
                 .foregroundStyle(Color.attenuato)
 
             VStack(spacing: S.x2) {
-                rigaAttività(
-                    titolo: "Diario",
-                    valore: "\(pagine.count) \(pagine.count == 1 ? "pagina" : "pagine")",
-                    sottoTitolo: pagine.first?.testo.prefix(60).description,
-                    icona: "book.closed"
-                )
+                Button { router.scheda = .diario } label: {
+                    rigaAttività(
+                        titolo: "Diario",
+                        valore: "\(pagine.count) \(pagine.count == 1 ? "pagina" : "pagine")",
+                        sottoTitolo: pagine.first?.testo.prefix(60).description,
+                        icona: "book.closed"
+                    )
+                }
+                .buttonStyle(.plain)
 
-                rigaAttività(
-                    titolo: "Riflessioni",
-                    valore: "\(riflessioni.count) settiman\(riflessioni.count == 1 ? "a" : "e")",
-                    sottoTitolo: riflessioni.first.map { ultimaRiflessioneFormattata($0) },
-                    icona: "moon.stars"
-                )
+                Button { router.scheda = .riflessione } label: {
+                    rigaAttività(
+                        titolo: "Riflessioni",
+                        valore: "\(riflessioni.count) settiman\(riflessioni.count == 1 ? "a" : "e")",
+                        sottoTitolo: riflessioni.first.map { ultimaRiflessioneFormattata($0) },
+                        icona: "moon.stars"
+                    )
+                }
+                .buttonStyle(.plain)
 
-                rigaAttività(
-                    titolo: "Decisioni aperte",
-                    valore: "\(decisioniAperte.count) in sospeso",
-                    sottoTitolo: decisioniAperte.first?.titolo,
-                    icona: "scale.3d"
-                )
+                Button { router.scheda = .decisione } label: {
+                    rigaAttività(
+                        titolo: "Decisioni aperte",
+                        valore: "\(decisioniAperte.count) in sospeso",
+                        sottoTitolo: decisioniAperte.first?.titolo,
+                        icona: "scale.3d"
+                    )
+                }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -258,6 +268,7 @@ struct MappaView: View {
 
 #Preview {
     MappaView()
+        .environment(AppRouter())
         .modelContainer(for: [
             Profilo.self, Cerchio.self, Elemento.self,
             Pagina.self, Riflessione.self, Decisione.self, Insight.self,

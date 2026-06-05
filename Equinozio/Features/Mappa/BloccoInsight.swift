@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BloccoInsight: View {
     let insight: [InsightGenerato]
+    var onTap: ((TipoInsight) -> Void)? = nil
 
     var body: some View {
         if !insight.isEmpty {
@@ -20,26 +21,31 @@ struct BloccoInsight: View {
 
                 VStack(spacing: S.x2) {
                     ForEach(insight) { spunto in
-                        HStack(alignment: .top, spacing: S.x3) {
-                            Image(systemName: icona(spunto.tipo))
-                                .font(.system(size: 16, weight: .light))
-                                .foregroundStyle(Color.salvia)
-                                .frame(width: 24, height: 24, alignment: .center)
-                                .padding(.top, 2)
+                        Button {
+                            onTap?(spunto.tipo)
+                        } label: {
+                            HStack(alignment: .top, spacing: S.x3) {
+                                Image(systemName: icona(spunto.tipo))
+                                    .font(.system(size: 16, weight: .light))
+                                    .foregroundStyle(Color.salvia)
+                                    .frame(width: 24, height: 24, alignment: .center)
+                                    .padding(.top, 2)
 
-                            Text(spunto.testo)
-                                .font(.equinozio(.corpoMedio))
-                                .foregroundStyle(Color.inchiostro)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                Text(spunto.testo)
+                                    .font(.equinozio(.corpoMedio))
+                                    .foregroundStyle(Color.inchiostro)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .padding(S.x4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.superficie)
+                            .clipShape(RoundedRectangle(cornerRadius: R.r2))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: R.r2)
+                                    .stroke(Color.lineaSottile, lineWidth: 1)
+                            )
                         }
-                        .padding(S.x4)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color.superficie)
-                        .clipShape(RoundedRectangle(cornerRadius: R.r2))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: R.r2)
-                                .stroke(Color.lineaSottile, lineWidth: 1)
-                        )
+                        .buttonStyle(.plain)
                     }
                 }
             }

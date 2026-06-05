@@ -30,4 +30,12 @@ extension Scheda {
         guard url.scheme == "equinozio" else { return nil }
         return from(host: url.host)
     }
+
+    /// Scheda pertinente al tipo di Spunto (per il tap sulle card "Spunti").
+    static func perInsight(_ tipo: TipoInsight) -> Scheda {
+        switch tipo {
+        case .bilanciamentoBasso, .dominanzaCerchio, .crescitaTrend: return .riflessione
+        case .decisioneStorica: return .decisione
+        }
+    }
 }
