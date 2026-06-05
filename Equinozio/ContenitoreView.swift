@@ -128,6 +128,8 @@ struct ContenitoreView: View {
             try? await Task.sleep(nanoseconds: 200_000_000)
             esplorazioneAperta = true
         }
+
+        await SpuntoStore.aggiornaSeNecessario(contesto: contesto)
     }
 }
 

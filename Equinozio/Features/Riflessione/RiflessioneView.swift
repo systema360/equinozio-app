@@ -353,7 +353,7 @@ struct RiflessioneView: View {
 
         do {
             try contesto.save()
-            WidgetSnapshot.aggiorna(equilibrio: equilibrioCorrente)
+            Task { await SpuntoStore.rigenera(contesto: contesto) }
             withAnimation(.easeInOut(duration: 0.3)) {
                 salvataggioFatto = true
             }
