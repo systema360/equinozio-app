@@ -13,4 +13,10 @@ struct DeepLinkTests {
         #expect(Scheda.fromDeepLink(URL(string: "https://systema360.it")!) == nil)
         #expect(Scheda.fromDeepLink(URL(string: "equinozio://ignota")!) == nil)
     }
+    @Test func fromHostMappaLeSchede() {
+        #expect(Scheda.from(host: "riflessione") == .riflessione)
+        #expect(Scheda.from(host: "mappa") == .mappa)
+        #expect(Scheda.from(host: "ignota") == nil)
+        #expect(Scheda.from(host: nil) == nil)
+    }
 }

@@ -100,9 +100,11 @@ struct EquinozioApp: App {
                 NotificationeDelegate.shared.onApri = { scheda in router.scheda = scheda }
                 UNUserNotificationCenter.current().delegate = NotificationeDelegate.shared
                 PromemoriaService.shared.registraCategorie()
+                consumaPendingScheda()
             }
             .onChange(of: scenePhase) { _, nuovo in
                 gestisciCambioStato(nuovo)
+                if nuovo == .active { consumaPendingScheda() }
             }
             .onOpenURL { url in
                 if let scheda = Scheda.fromDeepLink(url) {
@@ -111,6 +113,16 @@ struct EquinozioApp: App {
             }
         }
         .modelContainer(modelContainer)
+    }
+
+    @MainActor
+    private func consumaPendingScheda() {
+        let difese = UserDefaults.standard
+        if let pending = difese.string(forKey: "pendingScheda"),
+           let scheda = Scheda.from(host: pending) {
+            router.scheda = scheda
+            difese.removeObject(forKey: "pendingScheda")
+        }
     }
 
     /// Quando l'app va in background (o si chiude) la riblocco subito.

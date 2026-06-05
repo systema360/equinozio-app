@@ -14,15 +14,20 @@ final class AppRouter {
 }
 
 extension Scheda {
-    /// Mappa un URL `equinozio://<scheda>` alla scheda corrispondente.
-    static func fromDeepLink(_ url: URL) -> Scheda? {
-        guard url.scheme == "equinozio" else { return nil }
-        switch url.host {
+    /// Mappa un host (mappa/diario/riflessione/decisione) alla scheda.
+    static func from(host: String?) -> Scheda? {
+        switch host {
         case "mappa":       return .mappa
         case "diario":      return .diario
         case "riflessione": return .riflessione
         case "decisione":   return .decisione
         default:            return nil
         }
+    }
+
+    /// Mappa un URL `equinozio://<scheda>` alla scheda corrispondente.
+    static func fromDeepLink(_ url: URL) -> Scheda? {
+        guard url.scheme == "equinozio" else { return nil }
+        return from(host: url.host)
     }
 }
