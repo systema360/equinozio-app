@@ -6,6 +6,7 @@ struct SettimanaTests {
     private var calUTC: Calendar {
         var c = Calendar(identifier: .gregorian)
         c.timeZone = TimeZone(identifier: "UTC")!
+        c.firstWeekday = 2  // lunedì (ISO / Italia)
         return c
     }
     @Test func idStabilePerLaStessaSettimana() {
