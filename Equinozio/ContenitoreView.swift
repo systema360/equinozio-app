@@ -16,6 +16,10 @@ enum Scheda: Hashable {
 struct ContenitoreView: View {
 
     @Environment(\.modelContext) private var contesto
+    #if !os(macOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    #endif
+
     @Query private var profili: [Profilo]
     @Query private var cerchi: [Cerchio]
     @Query private var elementi: [Elemento]
@@ -27,9 +31,15 @@ struct ContenitoreView: View {
     var body: some View {
         Group {
             #if os(macOS)
-            macView
+            sidebarView
             #else
-            iosView
+            if sizeClass == .regular {
+                // iPad in landscape o portrait grande → sidebar nativa (HIG).
+                sidebarView
+            } else {
+                // iPhone o iPad split compatto → tab bar.
+                tabView
+            }
             #endif
         }
         .task {
@@ -47,10 +57,10 @@ struct ContenitoreView: View {
         }
     }
 
-    // MARK: - iOS (iPhone + iPad)
+    // MARK: - Tab bar (iPhone, iPad compact)
 
     #if !os(macOS)
-    private var iosView: some View {
+    private var tabView: some View {
         TabView(selection: $schedaAttiva) {
             MappaView()
                 .tabItem { Label("Mappa", systemImage: "circle.grid.2x2.fill") }
@@ -71,10 +81,9 @@ struct ContenitoreView: View {
     }
     #endif
 
-    // MARK: - macOS
+    // MARK: - Sidebar (Mac, iPad regular)
 
-    #if os(macOS)
-    private var macView: some View {
+    private var sidebarView: some View {
         NavigationSplitView {
             List(selection: Binding(
                 get: { schedaAttiva as Scheda? },
@@ -96,7 +105,6 @@ struct ContenitoreView: View {
             }
         }
     }
-    #endif
 
     // MARK: - Setup primo avvio
 
