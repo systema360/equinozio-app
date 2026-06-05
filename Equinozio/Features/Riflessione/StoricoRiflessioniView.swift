@@ -12,6 +12,7 @@ import Charts
 struct StoricoRiflessioniView: View {
 
     @Environment(\.dismiss) private var chiudi
+    @Environment(\.modelContext) private var contesto
     @Query(sort: \Riflessione.data, order: .reverse) private var riflessioni: [Riflessione]
     @AppStorage("storicoIntroLetta") private var introLetta: Bool = false
     @State private var inModifica: Riflessione?
@@ -29,23 +30,63 @@ struct StoricoRiflessioniView: View {
         riflessioni.map(\.equilibrio).min() ?? 0
     }
 
+    private func cancella(_ r: Riflessione) {
+        withAnimation { contesto.delete(r); try? contesto.save() }
+    }
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: S.x5) {
-
-                    if !introLetta && !riflessioni.isEmpty {
-                        bannerIntro
-                    }
-                    sintesi
-                    notaEquilibrio
-                    grafico
-                    lista
+            List {
+                if !introLetta && !riflessioni.isEmpty {
+                    bannerIntro
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: S.x4, leading: S.x5, bottom: 0, trailing: S.x5))
+                        .listRowBackground(Color.sfondo)
                 }
-                .padding(.horizontal, S.x5)
-                .padding(.top, S.x4)
-                .padding(.bottom, S.x6)
+                sintesi
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: S.x4, leading: S.x5, bottom: 0, trailing: S.x5))
+                    .listRowBackground(Color.sfondo)
+                notaEquilibrio
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: S.x2, leading: S.x5, bottom: 0, trailing: S.x5))
+                    .listRowBackground(Color.sfondo)
+                if riflessioni.count >= 2 {
+                    grafico
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: S.x4, leading: S.x5, bottom: 0, trailing: S.x5))
+                        .listRowBackground(Color.sfondo)
+                }
+
+                Text("TUTTE LE RIFLESSIONI")
+                    .font(.equinozio(.etichetta)).tracking(2.0).foregroundStyle(Color.attenuato)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: S.x5, leading: S.x5, bottom: S.x2, trailing: S.x5))
+                    .listRowBackground(Color.sfondo)
+
+                if riflessioni.isEmpty {
+                    Text("Niente ancora. Le riflessioni che salvi appariranno qui.")
+                        .font(.equinozio(.corpoMedio)).foregroundStyle(Color.attenuato)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 0, leading: S.x5, bottom: S.x4, trailing: S.x5))
+                        .listRowBackground(Color.sfondo)
+                } else {
+                    ForEach(riflessioni) { r in
+                        Button { inModifica = r } label: { rigaRiflessione(r) }
+                            .buttonStyle(.plain)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: S.x1, leading: S.x5, bottom: S.x1, trailing: S.x5))
+                            .listRowBackground(Color.sfondo)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) { cancella(r) } label: {
+                                    Label("Cancella", systemImage: "trash")
+                                }
+                            }
+                    }
+                }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
             .background(Color.sfondo)
             .sheet(item: $inModifica) { r in
                 ModificaRiflessioneView(riflessione: r)
@@ -225,42 +266,6 @@ struct StoricoRiflessioniView: View {
                     RoundedRectangle(cornerRadius: R.r2)
                         .stroke(Color.lineaSottile, lineWidth: 1)
                 )
-            }
-        }
-    }
-
-    // MARK: - Lista
-
-    @ViewBuilder
-    private var lista: some View {
-        VStack(alignment: .leading, spacing: S.x3) {
-            Text("TUTTE LE RIFLESSIONI")
-                .font(.equinozio(.etichetta))
-                .tracking(2.0)
-                .foregroundStyle(Color.attenuato)
-
-            if riflessioni.isEmpty {
-                VStack(alignment: .leading, spacing: S.x2) {
-                    Text("Niente ancora.")
-                        .font(.equinozio(.titoloPiccolo))
-                        .foregroundStyle(Color.inchiostroTenue)
-                    Text("Le riflessioni che salvi appariranno qui, con il loro andamento nel tempo.")
-                        .font(.equinozio(.corpoMedio))
-                        .foregroundStyle(Color.attenuato)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, S.x4)
-            } else {
-                LazyVStack(spacing: S.x2) {
-                    ForEach(riflessioni) { r in
-                        Button {
-                            inModifica = r
-                        } label: {
-                            rigaRiflessione(r)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
             }
         }
     }
