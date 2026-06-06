@@ -21,6 +21,7 @@ struct DecisioneView: View {
     @State private var composerAperto = false
     @State private var decisioneSelezionata: Decisione?
     @State private var modalità: Modalità = .aperte
+    @State private var decisioneDaCancellare: Decisione?
 
     private var decisioniAperte: [Decisione] {
         decisioni.filter { ($0.decisione ?? "").isEmpty }
@@ -57,7 +58,7 @@ struct DecisioneView: View {
                                 .contentShape(Rectangle())
                                 .onTapGesture { decisioneSelezionata = d }
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) { cancella(d) } label: {
+                                    Button(role: .destructive) { decisioneDaCancellare = d } label: {
                                         Label("Cancella", systemImage: "trash")
                                     }
                                 }
@@ -75,6 +76,17 @@ struct DecisioneView: View {
                     .scrollContentBackground(.hidden)
                     .safeAreaInset(edge: .bottom) {
                         Color.clear.frame(height: S.x8)
+                    }
+                    .confirmationDialog(
+                        "Cancellare questa decisione?",
+                        isPresented: Binding(get: { decisioneDaCancellare != nil }, set: { if !$0 { decisioneDaCancellare = nil } }),
+                        titleVisibility: .visible,
+                        presenting: decisioneDaCancellare
+                    ) { d in
+                        Button("Cancella", role: .destructive) { cancella(d); decisioneDaCancellare = nil }
+                        Button("Annulla", role: .cancel) { decisioneDaCancellare = nil }
+                    } message: { _ in
+                        Text("L'azione non è reversibile.")
                     }
                 }
             }
