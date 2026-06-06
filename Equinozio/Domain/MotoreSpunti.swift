@@ -21,6 +21,18 @@ public final class MotoreSpunti {
     private let log = Logger(subsystem: "it.systema360.equinozio", category: "MotoreSpunti")
     private init() {}
 
+    /// Riscrittura del testo (default: Foundation Models). Sostituibile nei test.
+    var riscrittore: (String) async -> String? = { frase in
+        await MotoreSpunti.riscritturaPredefinita(frase)
+    }
+
+    /// Factory per i test: crea un'istanza con un riscrittore finto.
+    static func perTest(riscrittore: @escaping (String) async -> String?) -> MotoreSpunti {
+        let m = MotoreSpunti()
+        m.riscrittore = riscrittore
+        return m
+    }
+
     // MARK: - Parte pura (regole)
 
     nonisolated public static func principale(
@@ -50,18 +62,26 @@ public final class MotoreSpunti {
     }
 
     private func testoCaldo(per fraseRegola: String) async -> String {
-        if #available(iOS 26.0, macOS 26.0, *) {
-            if let riscritta = await riscrivi(fraseRegola), !riscritta.isEmpty {
-                return riscritta
-            }
+        if let riscritta = await riscrittore(fraseRegola), !riscritta.isEmpty {
+            return riscritta
         }
         return fraseRegola
     }
 
+    // MARK: - Riscrittura predefinita (Foundation Models)
+
+    nonisolated static func riscritturaPredefinita(_ frase: String) async -> String? {
+        if #available(iOS 26.0, macOS 26.0, *) {
+            return await _riscritturaPredefinitaDisponibile(frase)
+        }
+        return nil
+    }
+
     #if canImport(FoundationModels)
     @available(iOS 26.0, macOS 26.0, *)
-    private func riscrivi(_ frase: String) async -> String? {
+    private nonisolated static func _riscritturaPredefinitaDisponibile(_ frase: String) async -> String? {
         guard case .available = SystemLanguageModel.default.availability else { return nil }
+        let log = Logger(subsystem: "it.systema360.equinozio", category: "MotoreSpunti")
         let istruzioni = """
         Sei la voce di Equinozio, un'app italiana calma sul metodo dei quattro cerchi.
         Ti do una frase già corretta nei fatti e nei numeri. Riscrivila in UNA frase
@@ -79,6 +99,6 @@ public final class MotoreSpunti {
     }
     #else
     @available(iOS 26.0, macOS 26.0, *)
-    private func riscrivi(_ frase: String) async -> String? { nil }
+    private nonisolated static func _riscritturaPredefinitaDisponibile(_ frase: String) async -> String? { nil }
     #endif
 }

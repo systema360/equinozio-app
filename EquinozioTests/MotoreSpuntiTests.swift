@@ -34,4 +34,19 @@ struct MotoreSpuntiTests {
         let regole = [InsightGenerato(tipo: .bilanciamentoBasso, testo: "r1")]
         #expect(MotoreSpunti.spuntiMappa(principale: nil, regole: regole).count == 1)
     }
+
+    @MainActor
+    @Test func spuntoUsaLaRiscritturaQuandoDisponibile() async {
+        let m = MotoreSpunti.perTest(riscrittore: { _ in "AI: riscritto" })
+        let r = await m.spuntoPrincipale(riflessioni: [rifl(70, 10, 10, 10)], decisioni: [], adesso: .now)
+        #expect(r?.testo == "AI: riscritto")
+    }
+
+    @MainActor
+    @Test func spuntoFallbackAllaRegolaSeRiscritturaNil() async {
+        let regola = GeneratoreInsight.genera(riflessioni: [rifl(70, 10, 10, 10)], decisioni: [], adesso: .now).first
+        let m = MotoreSpunti.perTest(riscrittore: { _ in nil })
+        let r = await m.spuntoPrincipale(riflessioni: [rifl(70, 10, 10, 10)], decisioni: [], adesso: .now)
+        #expect(r?.testo == regola?.testo)
+    }
 }
