@@ -33,14 +33,14 @@ public enum SpuntoStore {
         )) ?? []
         let decisioni = (try? contesto.fetch(FetchDescriptor<Decisione>())) ?? []
 
-        // L'equilibrio del widget va tenuto allineato a prescindere dallo Spunto.
-        let equilibrio = riflessioni.first?.equilibrio ?? 50
+        // Le misure del widget vanno tenute allineate a prescindere dallo Spunto.
+        let misureCorrenti = misure(da: riflessioni)
 
         guard let spunto = await MotoreSpunti.shared.spuntoPrincipale(
             riflessioni: riflessioni, decisioni: decisioni, adesso: adesso
         ) else {
             try? contesto.save()
-            WidgetSnapshot.aggiornaEquilibrio(equilibrio)
+            WidgetSnapshot.aggiornaMisure(misureCorrenti)
             WidgetCenter.shared.reloadAllTimelines()
             return
         }
@@ -58,7 +58,7 @@ public enum SpuntoStore {
         try? contesto.save()
 
         WidgetSnapshot.aggiorna(
-            equilibrio: equilibrio,
+            misure: misureCorrenti,
             spuntoTesto: spunto.testo,
             spuntoTipo: spunto.tipo.rawValue,
             settimanaID: sid
@@ -84,6 +84,16 @@ public enum SpuntoStore {
         }
     }
 
+    /// Costruisce le misure del widget dalle riflessioni (ordinate dalla più recente).
+    nonisolated static func misure(da riflessioni: [Riflessione]) -> MisureWidget {
+        let equilibri = riflessioni.map(\.equilibrio)
+        let quote = riflessioni.first.map {
+            (passione: $0.quotaPassione, talento: $0.quotaTalento,
+             missione: $0.quotaMissione, professione: $0.quotaProfessione)
+        }
+        return MisureWidget.deriva(equilibri: equilibri, quotePrimo: quote)
+    }
+
     /// Rigenera solo se non c'è già uno Spunto per la settimana corrente (usata all'apertura app).
     public static func aggiornaSeNecessario(contesto: ModelContext, adesso: Date = .now) async {
         let sid = Settimana.id(per: adesso)
@@ -94,7 +104,7 @@ public enum SpuntoStore {
             let riflessioni = (try? contesto.fetch(
                 FetchDescriptor<Riflessione>(sortBy: [SortDescriptor(\.data, order: .reverse)])
             )) ?? []
-            WidgetSnapshot.aggiornaEquilibrio(riflessioni.first?.equilibrio ?? 50)
+            WidgetSnapshot.aggiornaMisure(misure(da: riflessioni))
             WidgetCenter.shared.reloadAllTimelines()
             return
         }
