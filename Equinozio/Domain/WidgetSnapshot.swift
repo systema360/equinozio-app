@@ -17,11 +17,6 @@ public enum WidgetSnapshot {
     public static let chiaveSpuntoTipo = "spuntoTipo"
     public static let chiaveSettimana = "settimanaID"
 
-    public static func aggiorna(equilibrio: Int) {
-        guard let difese = UserDefaults(suiteName: suite) else { return }
-        difese.set(equilibrio, forKey: chiaveEquilibrio)
-    }
-
     /// Lo Spunto corrente dallo snapshot App Group (nil se assente/vuoto).
     public static func leggiSpunto() -> String? {
         guard let difese = UserDefaults(suiteName: suite) else { return nil }
