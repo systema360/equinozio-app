@@ -2,7 +2,7 @@
 //  QuattroCerchi.swift
 //  Equinozio · DesignSystem · Components
 //
-//  L'emblema dell'applicazione. Diagramma a quattro cerchi (Venn) FISSO
+//  L'emblema dell'applicazione. Diagramma a quattro cerchi a rombo (logo canonico)
 //  e identico al logo · è la costante visiva che accoglie l'utente.
 //
 //  Lo stato dell'utente (numero elementi, equilibrio, etc.) NON è espresso
@@ -29,9 +29,8 @@ public struct QuattroCerchi: View {
         GeometryReader { proxy in
             let lato = min(proxy.size.width, proxy.size.height)
             let centro = CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2)
-            // Proporzioni del mockup originale del manifesto:
-            // distanza centri 130/1024 = 0.127 · raggio 230/1024 = 0.225
-            let distanzaCentri: CGFloat = lato * 0.127
+            // Logo a rombo: stessi raggi, centri ai 4 punti cardinali.
+            let distanzaCentri: CGFloat = lato * 0.201
             let raggio: CGFloat = lato * 0.225
 
             ZStack {
@@ -46,10 +45,10 @@ public struct QuattroCerchi: View {
                         ? (scuro ? 0.92 : 0.86)
                         : (scuro ? 0.82 : 0.78)
                     let posizioni: [(CGPoint, Color)] = [
-                        (CGPoint(x: centro.x - distanzaCentri, y: centro.y - distanzaCentri), .passione),
-                        (CGPoint(x: centro.x + distanzaCentri, y: centro.y - distanzaCentri), .talento),
-                        (CGPoint(x: centro.x - distanzaCentri, y: centro.y + distanzaCentri), .missione),
-                        (CGPoint(x: centro.x + distanzaCentri, y: centro.y + distanzaCentri), .professione),
+                        (CGPoint(x: centro.x,                    y: centro.y - distanzaCentri), .passione),
+                        (CGPoint(x: centro.x - distanzaCentri,   y: centro.y),                  .talento),
+                        (CGPoint(x: centro.x + distanzaCentri,   y: centro.y),                  .missione),
+                        (CGPoint(x: centro.x,                    y: centro.y + distanzaCentri), .professione),
                     ]
                     for (pos, colore) in posizioni {
                         let rect = CGRect(
@@ -67,12 +66,6 @@ public struct QuattroCerchi: View {
                     value: inEspirazione
                 )
 
-                // Punto centrale · l'equinozio
-                Circle()
-                    .fill(Color.salvia)
-                    .frame(width: 6, height: 6)
-                    .position(centro)
-
                 if mostraEtichette {
                     etichetteEsterne(centro: centro, distanzaCentri: distanzaCentri, raggio: raggio)
                 }
@@ -88,29 +81,16 @@ public struct QuattroCerchi: View {
 
     @ViewBuilder
     private func etichetteEsterne(centro: CGPoint, distanzaCentri: CGFloat, raggio: CGFloat) -> some View {
-        // Le label vivono a (centro + offset diagonale * (raggio + margine))
         let margine: CGFloat = 6
 
         etichetta(.passione)
-            .position(
-                x: centro.x - distanzaCentri - raggio * 0.55,
-                y: centro.y - distanzaCentri - raggio - margine
-            )
+            .position(x: centro.x, y: centro.y - distanzaCentri - raggio - margine)
         etichetta(.talento)
-            .position(
-                x: centro.x + distanzaCentri + raggio * 0.55,
-                y: centro.y - distanzaCentri - raggio - margine
-            )
+            .position(x: centro.x - distanzaCentri - raggio - margine, y: centro.y)
         etichetta(.missione)
-            .position(
-                x: centro.x - distanzaCentri - raggio * 0.55,
-                y: centro.y + distanzaCentri + raggio + margine
-            )
+            .position(x: centro.x + distanzaCentri + raggio + margine, y: centro.y)
         etichetta(.professione)
-            .position(
-                x: centro.x + distanzaCentri + raggio * 0.55,
-                y: centro.y + distanzaCentri + raggio + margine
-            )
+            .position(x: centro.x, y: centro.y + distanzaCentri + raggio + margine)
     }
 
     private func etichetta(_ tipo: TipoCerchio) -> some View {
