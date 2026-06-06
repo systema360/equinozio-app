@@ -232,6 +232,7 @@ struct DiarioView: View {
                 Text(riassunto)
                     .font(.equinozio(.corpoMedio))
                     .foregroundStyle(Color.inchiostro)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(S.x4)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color.superficie)
