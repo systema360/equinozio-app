@@ -17,6 +17,7 @@ struct MappaView: View {
     @Query(filter: #Predicate<Pagina> { !$0.isCancellata },
            sort: \Pagina.dataCreazione, order: .reverse) private var pagine: [Pagina]
     @Query(sort: \Decisione.dataAggiunta, order: .reverse) private var decisioni: [Decisione]
+    // Pochi Insight (potati a 8 in SpuntoStore): filtro la settimana corrente in Swift.
     @Query(sort: \Insight.dataGenerazione, order: .reverse) private var insightCache: [Insight]
 
     @Environment(AppRouter.self) private var router

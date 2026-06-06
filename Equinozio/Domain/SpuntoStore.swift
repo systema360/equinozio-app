@@ -45,6 +45,13 @@ public enum SpuntoStore {
         contesto.insert(modello)
         try? contesto.save()
 
+        // Pota gli Insight vecchi: tieni i 8 più recenti.
+        let tutti = (try? contesto.fetch(
+            FetchDescriptor<Insight>(sortBy: [SortDescriptor(\.dataGenerazione, order: .reverse)])
+        )) ?? []
+        for vecchio in tutti.dropFirst(8) { contesto.delete(vecchio) }
+        try? contesto.save()
+
         let equilibrio = riflessioni.first?.equilibrio ?? 50
         WidgetSnapshot.aggiorna(
             equilibrio: equilibrio,
