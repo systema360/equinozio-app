@@ -256,17 +256,11 @@ struct MappaView: View {
     // MARK: - Helper
 
     private func ultimaRiflessioneFormattata(_ r: Riflessione) -> String {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "it_IT")
-        f.dateFormat = "EEEE d MMM"
-        return "Ultima · \(f.string(from: r.data))"
+        "Ultima · \(Formattazione.giornoMeseBreve.string(from: r.data))"
     }
 
     private var dataFormattata: String {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "it_IT")
-        f.dateFormat = "EEEE d MMMM"
-        return f.string(from: .now)
+        Formattazione.giornoMese.string(from: .now)
     }
 }
 

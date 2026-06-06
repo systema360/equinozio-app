@@ -301,10 +301,7 @@ struct RiflessioneView: View {
     }
 
     private var periodoCorrente: String {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "it_IT")
-        f.dateFormat = "EEEE d MMMM"
-        return f.string(from: .now)
+        Formattazione.giornoMese.string(from: .now)
     }
 
     // MARK: - Persistenza

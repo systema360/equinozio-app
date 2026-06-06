@@ -336,10 +336,7 @@ struct StoricoRiflessioniView: View {
     }
 
     private func dataFormattata(_ data: Date) -> String {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "it_IT")
-        f.dateFormat = "EEEE d MMMM"
-        return f.string(from: data)
+        Formattazione.giornoMese.string(from: data)
     }
 }
 

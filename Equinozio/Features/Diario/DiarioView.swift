@@ -667,10 +667,7 @@ private struct DettaglioPaginaView: View {
     }
 
     private var dataFormattata: String {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "it_IT")
-        f.dateFormat = "EEEE d MMMM · HH:mm"
-        return f.string(from: pagina.dataCreazione)
+        Formattazione.giornoMeseOra.string(from: pagina.dataCreazione)
     }
 
     private func avviaModifica() {
