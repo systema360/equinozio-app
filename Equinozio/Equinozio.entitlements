@@ -6,10 +6,6 @@
 	<array>
 		<string>group.it.systema360.equinozio</string>
 	</array>
-	<key>aps-environment</key>
-	<string>development</string>
-	<key>com.apple.developer.aps-environment</key>
-	<string>development</string>
 	<key>com.apple.developer.icloud-container-identifiers</key>
 	<array>
 		<string>iCloud.it.systema360.equinozio</string>

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import OSLog
 
 struct RiflessioneView: View {
 
@@ -362,7 +363,8 @@ struct RiflessioneView: View {
                 storicoAperto = true
             }
         } catch {
-            print("Errore salvataggio riflessione: \(error)")
+            Logger(subsystem: "it.systema360.equinozio", category: "Riflessione")
+                .error("Errore salvataggio riflessione: \(error.localizedDescription)")
         }
     }
 }
