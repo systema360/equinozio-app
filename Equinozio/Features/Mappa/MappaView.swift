@@ -187,6 +187,7 @@ struct MappaView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Apri il Diario")
 
                 Button { router.scheda = .riflessione } label: {
                     rigaAttività(
@@ -197,6 +198,7 @@ struct MappaView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Apri la Riflessione")
 
                 Button { router.scheda = .decisione } label: {
                     rigaAttività(
@@ -207,6 +209,7 @@ struct MappaView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Apri le Decisioni")
             }
         }
     }

@@ -46,6 +46,7 @@ struct BloccoInsight: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .accessibilityHint("Apri la scheda relativa")
                     }
                 }
             }
