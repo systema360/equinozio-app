@@ -54,6 +54,7 @@ struct EsplorazioneView: View {
                     }
                 }
             }
+            .toolbarTastieraFine()
             .task(id: cerchi.count) {
                 caricaScelteIniziali()
             }
@@ -188,6 +189,7 @@ struct EsplorazioneView: View {
             .padding(.top, modale ? S.x4 : S.x7)
             .padding(.bottom, S.x6)
         }
+        .scrollDismissesKeyboard(.interactively)
     }
 
     // MARK: - Progresso

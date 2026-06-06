@@ -303,6 +303,7 @@ private struct ComposerDecisione: View {
                 .padding(.top, S.x4)
                 .padding(.bottom, S.x6)
             }
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.sfondo)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -316,6 +317,7 @@ private struct ComposerDecisione: View {
                         .foregroundStyle(Color.salvia)
                 }
             }
+            .toolbarTastieraFine()
         }
     }
 
@@ -555,6 +557,7 @@ private struct DettaglioDecisione: View {
                 .padding(.top, S.x4)
                 .padding(.bottom, S.x6)
             }
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.sfondo)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -588,6 +591,7 @@ private struct DettaglioDecisione: View {
                     }
                 }
             }
+            .toolbarTastieraFine()
         }
     }
 

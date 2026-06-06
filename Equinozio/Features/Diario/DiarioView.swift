@@ -455,6 +455,7 @@ private struct ComposerPagina: View {
                         .foregroundStyle(Color.salvia)
                 }
             }
+            .toolbarTastieraFine()
         }
     }
 
@@ -582,6 +583,7 @@ private struct DettaglioPaginaView: View {
                 .padding(.top, S.x4)
                 .padding(.bottom, S.x6)
             }
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.sfondo)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -633,6 +635,7 @@ private struct DettaglioPaginaView: View {
                 Button("Cancella", role: .destructive, action: cancella)
                 Button("Annulla", role: .cancel) {}
             }
+            .toolbarTastieraFine()
         }
     }
 

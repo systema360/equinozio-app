@@ -73,6 +73,7 @@ struct ModificaRiflessioneView: View {
                 .padding(.top, S.x4)
                 .padding(.bottom, S.x6)
             }
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.sfondo)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -86,6 +87,7 @@ struct ModificaRiflessioneView: View {
                         .foregroundStyle(Color.salvia)
                 }
             }
+            .toolbarTastieraFine()
             .onAppear(perform: carica)
         }
     }

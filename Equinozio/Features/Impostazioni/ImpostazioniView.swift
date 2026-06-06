@@ -241,6 +241,7 @@ struct ImpostazioniView: View {
                 .padding(.top, S.x4)
                 .padding(.bottom, S.x6)
             }
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.sfondo)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -259,6 +260,7 @@ struct ImpostazioniView: View {
                         .fontWeight(.medium)
                 }
             }
+            .toolbarTastieraFine()
         }
         .onAppear {
             nomeEditabile = profilo?.nome ?? ""
