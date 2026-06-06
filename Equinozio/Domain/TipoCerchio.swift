@@ -15,7 +15,7 @@ public enum TipoCerchio: String, Codable, CaseIterable, Identifiable, Hashable {
 
     public var id: String { rawValue }
 
-    public var titolo: String {
+    public nonisolated var titolo: String {
         switch self {
         case .passione:    return "Passione"
         case .talento:     return "Talento"

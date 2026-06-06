@@ -9,7 +9,7 @@
 
 import Foundation
 
-public enum WidgetSnapshot {
+public nonisolated enum WidgetSnapshot {
     public static let suite = "group.it.systema360.equinozio"
 
     public static let chiaveEquilibrio = "equilibrioCorrente"

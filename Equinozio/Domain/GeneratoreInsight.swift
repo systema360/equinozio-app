@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct InsightGenerato: Identifiable, Equatable {
+public nonisolated struct InsightGenerato: Identifiable, Equatable {
     public let id = UUID()
     public let tipo: TipoInsight
     public let testo: String
@@ -23,7 +23,7 @@ public struct InsightGenerato: Identifiable, Equatable {
     }
 }
 
-public enum GeneratoreInsight {
+public nonisolated enum GeneratoreInsight {
 
     /// Genera fino a 3 insight, in ordine di priorità.
     /// - riflessioni: ordinate dalla più recente alla più vecchia.

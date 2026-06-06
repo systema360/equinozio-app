@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct MisureWidget: Equatable {
+public nonisolated struct MisureWidget: Equatable, Sendable {
     public var equilibrio: Int
     public var passione: Int
     public var talento: Int
