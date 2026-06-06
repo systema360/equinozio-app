@@ -11,36 +11,62 @@ import WidgetKit
 import SwiftUI
 
 private let gruppoCondiviso = "group.it.systema360.equinozio"
-private let chiaveEquilibrio = "equilibrioCorrente"
 
 // MARK: - Timeline
 
 struct EquinozioEntry: TimelineEntry {
     let date: Date
     let equilibrio: Int
+    let passione: Int
+    let talento: Int
+    let missione: Int
+    let professione: Int
+    let delta: Int
+    let haTrend: Bool
+    let haRiflessioni: Bool
     let spunto: String
+
+    var quote: [Int] { [passione, talento, missione, professione] }
+
+    static let esempio = EquinozioEntry(
+        date: .now, equilibrio: 72, passione: 40, talento: 30, missione: 20,
+        professione: 10, delta: 6, haTrend: true, haRiflessioni: true,
+        spunto: "Settimana in equilibrio."
+    )
+    static let vuoto = EquinozioEntry(
+        date: .now, equilibrio: 50, passione: 0, talento: 0, missione: 0,
+        professione: 0, delta: 0, haTrend: false, haRiflessioni: false, spunto: ""
+    )
 }
 
 struct EquinozioProvider: TimelineProvider {
-    func placeholder(in context: Context) -> EquinozioEntry {
-        EquinozioEntry(date: .now, equilibrio: 72, spunto: "Settimana in equilibrio.")
-    }
+    func placeholder(in context: Context) -> EquinozioEntry { .esempio }
 
     func getSnapshot(in context: Context, completion: @escaping (EquinozioEntry) -> Void) {
-        completion(EquinozioEntry(date: .now, equilibrio: leggiEquilibrio(), spunto: leggiSpunto()))
+        completion(leggiEntry())
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<EquinozioEntry>) -> Void) {
-        let entry = EquinozioEntry(date: .now, equilibrio: leggiEquilibrio(), spunto: leggiSpunto())
+        let entry = leggiEntry()
         // Aggiornamento di cortesia ogni ora (l'app aggiorna lo snapshot al salvataggio).
         completion(Timeline(entries: [entry], policy: .after(.now.addingTimeInterval(3600))))
     }
 
-    private func leggiEquilibrio() -> Int {
-        guard let difese = UserDefaults(suiteName: gruppoCondiviso),
-              let valore = difese.object(forKey: chiaveEquilibrio) as? Int
-        else { return 50 }
-        return valore
+    private func leggiEntry() -> EquinozioEntry {
+        let d = UserDefaults(suiteName: gruppoCondiviso)
+        let haRifl = d?.bool(forKey: "haRiflessioni") ?? false
+        return EquinozioEntry(
+            date: .now,
+            equilibrio: (d?.object(forKey: "equilibrioCorrente") as? Int) ?? 50,
+            passione: d?.integer(forKey: "quotaPassione") ?? 0,
+            talento: d?.integer(forKey: "quotaTalento") ?? 0,
+            missione: d?.integer(forKey: "quotaMissione") ?? 0,
+            professione: d?.integer(forKey: "quotaProfessione") ?? 0,
+            delta: d?.integer(forKey: "trendDelta") ?? 0,
+            haTrend: d?.bool(forKey: "haTrend") ?? false,
+            haRiflessioni: haRifl,
+            spunto: leggiSpunto()
+        )
     }
 
     private func settimanaCorrenteID() -> String {
@@ -72,41 +98,51 @@ struct EquinozioWidgetView: View {
     var entry: EquinozioEntry
 
     var body: some View {
-        Group {
+        contenutoHome
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .padding(famiglia == .systemSmall ? 16 : 20)
+            .containerBackground(.background, for: .widget)
+            .widgetURL(URL(string: "equinozio://riflessione"))
+    }
+
+    @ViewBuilder private var contenutoHome: some View {
+        if !entry.haRiflessioni {
+            statoVuoto
+        } else {
             switch famiglia {
             case .systemLarge: grande
             case .systemMedium: medio
             default: piccolo
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .padding(famiglia == .systemSmall ? 16 : 20)
-        .containerBackground(.background, for: .widget)
-        .widgetURL(URL(string: "equinozio://riflessione"))
     }
 
-    // systemSmall: numero + pallini dei cerchi
+    // systemSmall: numero + tendenza + barra segmentata
     private var piccolo: some View {
         VStack(alignment: .leading, spacing: 6) {
             etichetta
-            numero
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                numero
+                tendenza
+            }
             Spacer(minLength: 0)
+            barraSegmentata
             HStack(spacing: 5) {
-                ForEach(cerchiEquinozio.indices, id: \.self) { i in
-                    Circle().fill(cerchiEquinozio[i].colore).frame(width: 8, height: 8)
-                }
                 Spacer()
                 marchio
             }
         }
     }
 
-    // systemMedium: numero a sinistra + legenda dei quattro cerchi a destra
+    // systemMedium: numero + spunto a sinistra, barre dei cerchi a destra
     private var medio: some View {
         HStack(alignment: .top, spacing: 18) {
             VStack(alignment: .leading, spacing: 6) {
                 etichetta
-                numero
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    numero
+                    tendenza
+                }
                 if !entry.spunto.isEmpty {
                     Text(entry.spunto)
                         .font(.system(size: 12, weight: .light))
@@ -117,29 +153,29 @@ struct EquinozioWidgetView: View {
                 marchio
             }
             Spacer(minLength: 0)
-            VStack(alignment: .leading, spacing: 9) {
+            VStack(alignment: .leading, spacing: 10) {
                 ForEach(cerchiEquinozio.indices, id: \.self) { i in
-                    HStack(spacing: 8) {
-                        Circle().fill(cerchiEquinozio[i].colore).frame(width: 8, height: 8)
-                        Text(cerchiEquinozio[i].nome)
-                            .font(.system(size: 13, weight: .light))
-                    }
+                    rigaBarra(i)
                 }
             }
+            .frame(width: 150)
         }
     }
 
-    // systemLarge: numero grande + i quattro cerchi con nome e descrizione breve
+    // systemLarge: numero grande + spunto + barre etichettate
     private var grande: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 14) {
             etichetta
-            HStack(alignment: .firstTextBaseline, spacing: 3) {
-                Text("\(entry.equilibrio)")
-                    .font(.system(size: 68, weight: .thin))
-                    .monospacedDigit()
-                Text("%")
-                    .font(.system(size: 24, weight: .thin))
-                    .foregroundStyle(.secondary)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                HStack(alignment: .firstTextBaseline, spacing: 3) {
+                    Text("\(entry.equilibrio)")
+                        .font(.system(size: 64, weight: .thin))
+                        .monospacedDigit()
+                    Text("%")
+                        .font(.system(size: 22, weight: .thin))
+                        .foregroundStyle(.secondary)
+                }
+                tendenza
             }
 
             Divider()
@@ -148,16 +184,12 @@ struct EquinozioWidgetView: View {
                 Text(entry.spunto)
                     .font(.system(size: 12, weight: .light))
                     .foregroundStyle(.secondary)
-                    .lineLimit(4)
+                    .lineLimit(3)
             }
 
-            VStack(alignment: .leading, spacing: 13) {
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(cerchiEquinozio.indices, id: \.self) { i in
-                    HStack(spacing: 10) {
-                        Circle().fill(cerchiEquinozio[i].colore).frame(width: 10, height: 10)
-                        Text(cerchiEquinozio[i].nome)
-                            .font(.system(size: 16, weight: .light))
-                    }
+                    rigaBarra(i)
                 }
             }
 
@@ -165,6 +197,8 @@ struct EquinozioWidgetView: View {
             marchio
         }
     }
+
+    // MARK: - Componenti
 
     private var etichetta: some View {
         Text("EQUILIBRIO")
@@ -184,10 +218,82 @@ struct EquinozioWidgetView: View {
         }
     }
 
+    @ViewBuilder private var tendenza: some View {
+        if entry.haTrend {
+            HStack(spacing: 2) {
+                Image(systemName: entry.delta > 0 ? "arrow.up"
+                    : entry.delta < 0 ? "arrow.down" : "arrow.right")
+                Text("\(abs(entry.delta))")
+                    .monospacedDigit()
+            }
+            .font(.system(size: 12, weight: .regular))
+            .foregroundStyle(.secondary)
+        }
+    }
+
     private var marchio: some View {
         Text("Equinozio")
             .font(.system(size: 11, weight: .light))
             .foregroundStyle(.secondary)
+    }
+
+    // Riga: nome cerchio + % + barra proporzionale.
+    private func rigaBarra(_ i: Int) -> some View {
+        let quota = entry.quote[i]
+        return VStack(alignment: .leading, spacing: 3) {
+            HStack {
+                Text(cerchiEquinozio[i].nome)
+                    .font(.system(size: 12, weight: .light))
+                Spacer()
+                Text("\(quota)%")
+                    .font(.system(size: 12, weight: .regular))
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+            }
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(cerchiEquinozio[i].colore.opacity(0.18))
+                    Capsule().fill(cerchiEquinozio[i].colore)
+                        .frame(width: geo.size.width * CGFloat(min(100, max(0, quota))) / 100)
+                }
+            }
+            .frame(height: 5)
+        }
+    }
+
+    // Barra unica con 4 segmenti proporzionali (widget piccolo).
+    private var barraSegmentata: some View {
+        let somma = max(1, entry.quote.reduce(0, +))
+        return GeometryReader { geo in
+            HStack(spacing: 2) {
+                ForEach(cerchiEquinozio.indices, id: \.self) { i in
+                    Capsule()
+                        .fill(cerchiEquinozio[i].colore)
+                        .frame(width: max(2, geo.size.width * CGFloat(entry.quote[i]) / CGFloat(somma)))
+                }
+            }
+        }
+        .frame(height: 6)
+    }
+
+    // Stato senza riflessioni: invito ad agire.
+    private var statoVuoto: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            etichetta
+            Text(famiglia == .systemSmall ? "Inizia la\ntua mappa" : "Fai la tua prima riflessione")
+                .font(.system(size: famiglia == .systemSmall ? 16 : 20, weight: .light))
+                .foregroundStyle(.primary)
+            Spacer(minLength: 0)
+            HStack {
+                HStack(spacing: 5) {
+                    ForEach(cerchiEquinozio.indices, id: \.self) { i in
+                        Circle().fill(cerchiEquinozio[i].colore).frame(width: 8, height: 8)
+                    }
+                }
+                Spacer()
+                marchio
+            }
+        }
     }
 }
 
@@ -210,18 +316,19 @@ struct EquinozioWidget: Widget {
 #Preview(as: .systemSmall) {
     EquinozioWidget()
 } timeline: {
-    EquinozioEntry(date: .now, equilibrio: 72, spunto: "")
-    EquinozioEntry(date: .now, equilibrio: 38, spunto: "")
+    EquinozioEntry.esempio
+    EquinozioEntry.vuoto
 }
 
 #Preview(as: .systemMedium) {
     EquinozioWidget()
 } timeline: {
-    EquinozioEntry(date: .now, equilibrio: 72, spunto: "Settimana in equilibrio.")
+    EquinozioEntry.esempio
+    EquinozioEntry.vuoto
 }
 
 #Preview(as: .systemLarge) {
     EquinozioWidget()
 } timeline: {
-    EquinozioEntry(date: .now, equilibrio: 72, spunto: "Settimana in equilibrio.")
+    EquinozioEntry.esempio
 }
