@@ -137,6 +137,8 @@ struct ModificaRiflessioneView: View {
         riflessione.quotaProfessione = professione
         riflessione.pensiero = pensiero.trimmingCharacters(in: .whitespacesAndNewlines)
         try? contesto.save()
+        // Le quote sono cambiate: riallinea Spunto e widget all'equilibrio aggiornato.
+        Task { await SpuntoStore.rigenera(contesto: contesto) }
         chiudi()
     }
 

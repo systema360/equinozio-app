@@ -33,10 +33,15 @@ public enum SpuntoStore {
         )) ?? []
         let decisioni = (try? contesto.fetch(FetchDescriptor<Decisione>())) ?? []
 
+        // L'equilibrio del widget va tenuto allineato a prescindere dallo Spunto.
+        let equilibrio = riflessioni.first?.equilibrio ?? 50
+
         guard let spunto = await MotoreSpunti.shared.spuntoPrincipale(
             riflessioni: riflessioni, decisioni: decisioni, adesso: adesso
         ) else {
             try? contesto.save()
+            WidgetSnapshot.aggiornaEquilibrio(equilibrio)
+            WidgetCenter.shared.reloadAllTimelines()
             return
         }
 
@@ -52,7 +57,6 @@ public enum SpuntoStore {
         for vecchio in tutti.dropFirst(8) { contesto.delete(vecchio) }
         try? contesto.save()
 
-        let equilibrio = riflessioni.first?.equilibrio ?? 50
         WidgetSnapshot.aggiorna(
             equilibrio: equilibrio,
             spuntoTesto: spunto.testo,
@@ -84,7 +88,16 @@ public enum SpuntoStore {
     public static func aggiornaSeNecessario(contesto: ModelContext, adesso: Date = .now) async {
         let sid = Settimana.id(per: adesso)
         let esistenti = (try? contesto.fetch(FetchDescriptor<Insight>())) ?? []
-        if esisteSpunto(per: sid, in: esistenti) { return }
+        if esisteSpunto(per: sid, in: esistenti) {
+            // Lo Spunto c'è già, ma l'equilibrio può essere cambiato (es. modifica
+            // di una riflessione): rinfresca comunque il widget.
+            let riflessioni = (try? contesto.fetch(
+                FetchDescriptor<Riflessione>(sortBy: [SortDescriptor(\.data, order: .reverse)])
+            )) ?? []
+            WidgetSnapshot.aggiornaEquilibrio(riflessioni.first?.equilibrio ?? 50)
+            WidgetCenter.shared.reloadAllTimelines()
+            return
+        }
         await rigenera(contesto: contesto, adesso: adesso)
     }
 }

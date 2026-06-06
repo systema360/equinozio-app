@@ -24,6 +24,13 @@ public enum WidgetSnapshot {
         return t.isEmpty ? nil : t
     }
 
+    /// Aggiorna solo l'equilibrio corrente (indipendente dallo Spunto).
+    /// Tiene il widget allineato anche quando si modifica una riflessione o si
+    /// riapre l'app senza rigenerare lo Spunto della settimana.
+    public static func aggiornaEquilibrio(_ valore: Int) {
+        UserDefaults(suiteName: suite)?.set(valore, forKey: chiaveEquilibrio)
+    }
+
     /// Snapshot completo: equilibrio + Spunto della settimana (per widget e notifica).
     public static func aggiorna(equilibrio: Int, spuntoTesto: String, spuntoTipo: String, settimanaID: String) {
         guard let difese = UserDefaults(suiteName: suite) else { return }
