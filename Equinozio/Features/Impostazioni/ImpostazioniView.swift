@@ -188,7 +188,7 @@ struct ImpostazioniView: View {
                         ShareLink(
                             item: URL(string: "https://systema360.it")!,
                             subject: Text("Equinozio"),
-                            message: Text("Equinozio — uno strumento sobrio per bilanciare i quattro cerchi della tua vita. Gratis, da Systema360.")
+                            message: Text("Equinozio, uno strumento sobrio per bilanciare i quattro cerchi della tua vita. Gratis, da Systema360.")
                         ) {
                             HStack {
                                 Image(systemName: "square.and.arrow.up")

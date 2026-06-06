@@ -24,6 +24,6 @@ public nonisolated enum EsportaDiario {
             }
             return blocco
         }
-        .joined(separator: "\n\n———\n\n")
+        .joined(separator: "\n\n---\n\n")
     }
 }

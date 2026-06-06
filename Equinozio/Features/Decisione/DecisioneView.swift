@@ -175,7 +175,7 @@ struct DecisioneView: View {
                 .font(.equinozio(.titoloPiccolo))
                 .foregroundStyle(Color.inchiostroTenue)
             Text(modalità == .aperte
-                 ? "Quando arriva un'opportunità da valutare — un lavoro, un progetto, una scelta — tocca il + per aggiungerla."
+                 ? "Quando arriva un'opportunità da valutare (un lavoro, un progetto, una scelta), tocca il + per aggiungerla."
                  : "Quando decidi su un'opportunità aperta, finisce qui · pronta per rileggerla in futuro."
             )
                 .font(.equinozio(.corpoMedio))

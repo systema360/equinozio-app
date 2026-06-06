@@ -21,6 +21,6 @@ struct EsportaDiarioTests {
         let out = EsportaDiario.testo(da: [p1, p2])
         #expect(out.contains("Uno"))
         #expect(out.contains("Due"))
-        #expect(out.contains("———"))
+        #expect(out.contains("---"))
     }
 }

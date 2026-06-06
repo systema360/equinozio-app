@@ -321,7 +321,7 @@ struct EquinozioWidgetView: View {
         Gauge(value: Double(entry.haRiflessioni ? entry.equilibrio : 0), in: 0...100) {
             Text("EQ")
         } currentValueLabel: {
-            Text(entry.haRiflessioni ? "\(entry.equilibrio)" : "—")
+            Text(entry.haRiflessioni ? "\(entry.equilibrio)" : "-")
         }
         .gaugeStyle(.accessoryCircularCapacity)
         .containerBackground(.clear, for: .widget)

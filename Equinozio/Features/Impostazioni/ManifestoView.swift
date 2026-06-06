@@ -19,11 +19,11 @@ struct ManifestoView: View {
                     hero
                     sezione(numero: "01", titolo: "Da dove nasce", paragrafi: [
                         "Equinozio nasce da un'osservazione semplice. Molte persone incontrano il diagramma a quattro cerchi della filosofia *ikigai* su un'infografica condivisa, lo trovano illuminante per dieci minuti, poi lo dimenticano.",
-                        "Il problema non è il framework — è la mancanza di uno strumento operativo che lo accompagni nel tempo. Un quiz una-tantum non cambia una vita. Un compagno discreto, presente quando serve, può farlo.",
+                        "Il problema non è il framework, è la mancanza di uno strumento operativo che lo accompagni nel tempo. Un quiz una-tantum non cambia una vita. Un compagno discreto, presente quando serve, può farlo.",
                     ])
 
                     sezione(numero: "02", titolo: "Le radici", paragrafi: [
-                        "Quello che chiamiamo \"ikigai\" — il diagramma a quattro cerchi — non è il vero concetto giapponese. È una sintesi recente.",
+                        "Quello che chiamiamo \"ikigai\" (il diagramma a quattro cerchi) non è il vero concetto giapponese. È una sintesi recente.",
                         "Nel **1966** la psichiatra giapponese **Mieko Kamiya** pubblica *Ikigai-ni-tsuite*: parla di piccoli motivi quotidiani, non di cerchi.",
                         "Nel **2011** lo spagnolo **Andrés Zuzunaga** pubblica il diagramma a quattro cerchi col nome \"Propósito\".",
                         "Nel **2014** il blogger britannico **Marc Winn** sovrappone il diagramma di Zuzunaga al concetto di ikigai. L'opera viene rilasciata in pubblico dominio.",
@@ -32,20 +32,20 @@ struct ManifestoView: View {
 
                     sezione(numero: "03", titolo: "Il metodo", paragrafi: [
                         "Quattro cerchi, quattro domande:",
-                        "**Passione** — Cosa ami fare, anche quando sei stanco?",
-                        "**Talento** — In cosa sei naturalmente bravo?",
-                        "**Missione** — Di cosa c'è bisogno intorno a te?",
-                        "**Professione** — Per cosa ti pagano oggi?",
+                        "**Passione**: Cosa ami fare, anche quando sei stanco?",
+                        "**Talento**: In cosa sei naturalmente bravo?",
+                        "**Missione**: Di cosa c'è bisogno intorno a te?",
+                        "**Professione**: Per cosa ti pagano oggi?",
                         "Quando le risposte si sovrappongono, trovi l'equilibrio.",
                     ])
 
                     sezione(numero: "04", titolo: "Perché Equinozio", paragrafi: [
-                        "Equinozio è il momento dell'anno in cui giorno e notte si equivalgono — il punto in cui due forze opposte trovano la stessa misura. È la stessa cosa che accade quando i quattro cerchi si bilanciano nella tua vita.",
-                        "L'anno ha quattro momenti cardine — due equinozi e due solstizi — che dividono il ciclo in quattro stagioni. Quattro momenti, quattro stagioni, quattro cerchi. La simmetria non è casuale.",
+                        "Equinozio è il momento dell'anno in cui giorno e notte si equivalgono, il punto in cui due forze opposte trovano la stessa misura. È la stessa cosa che accade quando i quattro cerchi si bilanciano nella tua vita.",
+                        "L'anno ha quattro momenti cardine (due equinozi e due solstizi) che dividono il ciclo in quattro stagioni. Quattro momenti, quattro stagioni, quattro cerchi. La simmetria non è casuale.",
                     ])
 
                     sezione(numero: "05", titolo: "Sempre gratuita", paragrafi: [
-                        "Equinozio è un dono al pubblico italiano da parte di **Systema360**. È il nostro modo di mostrare cosa sappiamo costruire — non a parole, ma in un prodotto vero.",
+                        "Equinozio è un dono al pubblico italiano da parte di **Systema360**. È il nostro modo di mostrare cosa sappiamo costruire, non a parole, ma in un prodotto vero.",
                         "Niente account, niente pubblicità, niente vendita di dati. I tuoi dati restano sul tuo dispositivo e nel tuo iCloud privato.",
                     ])
 

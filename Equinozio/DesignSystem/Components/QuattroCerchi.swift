@@ -94,7 +94,7 @@ public struct QuattroCerchi: View {
     }
 
     private func etichetta(_ tipo: TipoCerchio) -> some View {
-        Text("— " + tipo.titolo.lowercased())
+        Text("· " + tipo.titolo.lowercased())
             .font(.system(size: 9, weight: .medium))
             .tracking(1.6)
             .textCase(.uppercase)

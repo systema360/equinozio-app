@@ -153,7 +153,7 @@ struct StoricoRiflessioniView: View {
                 .font(.equinozio(.corpoMedio))
                 .foregroundStyle(Color.inchiostroTenue)
 
-            Text("Più la linea sta vicino al 100% di equilibrio, più la tua vita riflette i quattro cerchi che hai dichiarato di volere. Se vedi una serie di valori bassi su una dimensione, è un campanello — qualcosa che ami o che ti dà valore sta scomparendo dal calendario.")
+            Text("Più la linea sta vicino al 100% di equilibrio, più la tua vita riflette i quattro cerchi che hai dichiarato di volere. Se vedi una serie di valori bassi su una dimensione, è un campanello, qualcosa che ami o che ti dà valore sta scomparendo dal calendario.")
                 .font(.equinozio(.corpoMedio))
                 .foregroundStyle(Color.inchiostroTenue)
 
