@@ -16,6 +16,7 @@ struct StoricoRiflessioniView: View {
     @Query(sort: \Riflessione.data, order: .reverse) private var riflessioni: [Riflessione]
     @AppStorage("storicoIntroLetta") private var introLetta: Bool = false
     @State private var inModifica: Riflessione?
+    @State private var daCancellare: Riflessione?
 
     private var equilibrioMedio: Int {
         guard !riflessioni.isEmpty else { return 0 }
@@ -78,7 +79,7 @@ struct StoricoRiflessioniView: View {
                             .listRowInsets(EdgeInsets(top: S.x1, leading: S.x5, bottom: S.x1, trailing: S.x5))
                             .listRowBackground(Color.sfondo)
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) { cancella(r) } label: {
+                                Button(role: .destructive) { daCancellare = r } label: {
                                     Label("Cancella", systemImage: "trash")
                                 }
                             }
@@ -91,6 +92,17 @@ struct StoricoRiflessioniView: View {
             .sheet(item: $inModifica) { r in
                 ModificaRiflessioneView(riflessione: r)
                     .presentationDetents([.large])
+            }
+            .confirmationDialog(
+                "Cancellare questa riflessione?",
+                isPresented: Binding(get: { daCancellare != nil }, set: { if !$0 { daCancellare = nil } }),
+                titleVisibility: .visible,
+                presenting: daCancellare
+            ) { r in
+                Button("Cancella", role: .destructive) { cancella(r); daCancellare = nil }
+                Button("Annulla", role: .cancel) { daCancellare = nil }
+            } message: { _ in
+                Text("L'azione non è reversibile.")
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
