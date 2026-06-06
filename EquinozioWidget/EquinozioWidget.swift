@@ -98,11 +98,17 @@ struct EquinozioWidgetView: View {
     var entry: EquinozioEntry
 
     var body: some View {
-        contenutoHome
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            .padding(famiglia == .systemSmall ? 16 : 20)
-            .containerBackground(.background, for: .widget)
-            .widgetURL(URL(string: "equinozio://riflessione"))
+        switch famiglia {
+        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
+            contenutoAccessory
+                .widgetURL(URL(string: "equinozio://riflessione"))
+        default:
+            contenutoHome
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .padding(famiglia == .systemSmall ? 16 : 20)
+                .containerBackground(.background, for: .widget)
+                .widgetURL(URL(string: "equinozio://riflessione"))
+        }
     }
 
     @ViewBuilder private var contenutoHome: some View {
@@ -295,6 +301,67 @@ struct EquinozioWidgetView: View {
             }
         }
     }
+
+    // MARK: - Lock Screen / StandBy (monocromatico)
+
+    @ViewBuilder private var contenutoAccessory: some View {
+        switch famiglia {
+        case .accessoryCircular: circolare
+        case .accessoryRectangular: rettangolare
+        default: inline
+        }
+    }
+
+    private var frecciaTesto: String {
+        guard entry.haTrend else { return "" }
+        return entry.delta > 0 ? "↑" : entry.delta < 0 ? "↓" : "→"
+    }
+
+    private var circolare: some View {
+        Gauge(value: Double(entry.haRiflessioni ? entry.equilibrio : 0), in: 0...100) {
+            Text("EQ")
+        } currentValueLabel: {
+            Text(entry.haRiflessioni ? "\(entry.equilibrio)" : "—")
+        }
+        .gaugeStyle(.accessoryCircularCapacity)
+        .containerBackground(.clear, for: .widget)
+    }
+
+    private var rettangolare: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("EQUILIBRIO")
+                .font(.system(size: 11, weight: .semibold))
+            if entry.haRiflessioni {
+                HStack(spacing: 4) {
+                    Text("\(entry.equilibrio)%")
+                        .font(.system(size: 16, weight: .regular))
+                    if entry.haTrend {
+                        Text("\(frecciaTesto)\(abs(entry.delta))")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                if !entry.spunto.isEmpty {
+                    Text(entry.spunto)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            } else {
+                Text("Fai una riflessione")
+                    .font(.system(size: 14, weight: .light))
+            }
+        }
+        .containerBackground(.clear, for: .widget)
+    }
+
+    private var inline: some View {
+        if entry.haRiflessioni {
+            Text("Equilibrio \(entry.equilibrio)% \(frecciaTesto)")
+        } else {
+            Text("Equinozio · inizia")
+        }
+    }
 }
 
 // MARK: - Widget
@@ -309,7 +376,10 @@ struct EquinozioWidget: Widget {
         }
         .configurationDisplayName("Equilibrio")
         .description("Il tuo equilibrio settimanale, sempre a colpo d'occhio.")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies([
+            .systemSmall, .systemMedium, .systemLarge,
+            .accessoryCircular, .accessoryRectangular, .accessoryInline
+        ])
     }
 }
 
@@ -328,6 +398,26 @@ struct EquinozioWidget: Widget {
 }
 
 #Preview(as: .systemLarge) {
+    EquinozioWidget()
+} timeline: {
+    EquinozioEntry.esempio
+}
+
+#Preview(as: .accessoryCircular) {
+    EquinozioWidget()
+} timeline: {
+    EquinozioEntry.esempio
+    EquinozioEntry.vuoto
+}
+
+#Preview(as: .accessoryRectangular) {
+    EquinozioWidget()
+} timeline: {
+    EquinozioEntry.esempio
+    EquinozioEntry.vuoto
+}
+
+#Preview(as: .accessoryInline) {
     EquinozioWidget()
 } timeline: {
     EquinozioEntry.esempio
