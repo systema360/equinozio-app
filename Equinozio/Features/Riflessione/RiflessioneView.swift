@@ -93,6 +93,7 @@ struct RiflessioneView: View {
             .padding(.bottom, S.x6)
         }
         .scrollDismissesKeyboard(.interactively)
+        .toolbarTastieraFine()
         .background(Color.sfondo)
         .sheet(isPresented: $storicoAperto) {
             StoricoRiflessioniView()
