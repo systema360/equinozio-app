@@ -43,8 +43,16 @@ struct EquinozioProvider: TimelineProvider {
         return valore
     }
 
+    private func settimanaCorrenteID() -> String {
+        let c = Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: .now)
+        return "\(c.yearForWeekOfYear ?? 0)-W\(c.weekOfYear ?? 0)"
+    }
+
     private func leggiSpunto() -> String {
-        UserDefaults(suiteName: gruppoCondiviso)?.string(forKey: "spuntoTesto") ?? ""
+        let d = UserDefaults(suiteName: gruppoCondiviso)
+        let sid = d?.string(forKey: "settimanaID") ?? ""
+        guard sid == settimanaCorrenteID() else { return "" }
+        return d?.string(forKey: "spuntoTesto") ?? ""
     }
 }
 
