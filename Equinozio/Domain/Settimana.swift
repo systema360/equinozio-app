@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Settimana {
+public nonisolated enum Settimana {
     /// Es. "2026-W23". Indipendente dal locale: usa year-for-week-of-year + week-of-year.
     public static func id(per data: Date, calendario: Calendar = .current) -> String {
         let c = calendario.dateComponents([.yearForWeekOfYear, .weekOfYear], from: data)

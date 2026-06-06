@@ -9,7 +9,7 @@
 import SwiftUI
 import SwiftData
 
-enum Scheda: Hashable {
+nonisolated enum Scheda: Hashable {
     case mappa, diario, riflessione, decisione
 }
 

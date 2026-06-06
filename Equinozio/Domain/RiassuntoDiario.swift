@@ -12,7 +12,7 @@ import OSLog
 import FoundationModels
 #endif
 
-public enum RiassuntoDiario {
+public nonisolated enum RiassuntoDiario {
     /// Le pagine non cancellate appartenenti alla settimana di `adesso`.
     public static func pagineSettimana(
         _ pagine: [Pagina], adesso: Date, calendario: Calendar = .current

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum EsportaDiario {
+public nonisolated enum EsportaDiario {
     public static func testo(da pagine: [Pagina]) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "it_IT")

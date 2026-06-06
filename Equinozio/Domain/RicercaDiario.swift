@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum RicercaDiario {
+public nonisolated enum RicercaDiario {
     public static func filtra(_ pagine: [Pagina], cerchio: TipoCerchio?, ricerca: String) -> [Pagina] {
         let q = ricerca.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         return pagine.filter { p in

@@ -10,9 +10,9 @@ import Foundation
 
 /// Apre l'app sulla Riflessione. Scrive una "scheda in attesa" che l'app consuma all'avvio.
 struct ApriRiflessioneIntent: AppIntent {
-    static var title: LocalizedStringResource = "Apri la riflessione"
-    static var description = IntentDescription("Apre Equinozio sulla riflessione settimanale.")
-    static var openAppWhenRun: Bool = true
+    static let title: LocalizedStringResource = "Apri la riflessione"
+    static let description = IntentDescription("Apre Equinozio sulla riflessione settimanale.")
+    static let openAppWhenRun: Bool = true
 
     @MainActor
     func perform() async throws -> some IntentResult {
@@ -23,8 +23,8 @@ struct ApriRiflessioneIntent: AppIntent {
 
 /// Legge l'equilibrio corrente dallo snapshot App Group e lo riporta a voce.
 struct EquilibrioCorrenteIntent: AppIntent {
-    static var title: LocalizedStringResource = "Equilibrio corrente"
-    static var description = IntentDescription("Dice il tuo equilibrio settimanale.")
+    static let title: LocalizedStringResource = "Equilibrio corrente"
+    static let description = IntentDescription("Dice il tuo equilibrio settimanale.")
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let equilibrio = UserDefaults(suiteName: WidgetSnapshot.suite)?
