@@ -30,8 +30,8 @@ public struct QuattroCerchi: View {
             let lato = min(proxy.size.width, proxy.size.height)
             let centro = CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2)
             // Logo a rombo: stessi raggi, centri ai 4 punti cardinali.
-            let distanzaCentri: CGFloat = lato * 0.201
-            let raggio: CGFloat = lato * 0.225
+            let distanzaCentri: CGFloat = lato * 0.19
+            let raggio: CGFloat = lato * 0.19
 
             ZStack {
                 Canvas { ctx, _ in
