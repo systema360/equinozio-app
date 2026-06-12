@@ -37,6 +37,7 @@ struct EsplorazioneView: View {
                     tappaCorrenteView
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.sfondo)
             .toolbar {
                 if modale {
@@ -91,10 +92,12 @@ struct EsplorazioneView: View {
                  Text(" della tua vita."))
                     .font(.equinozio(.titoloMedio))
                     .foregroundStyle(Color.inchiostro)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text("Quindici minuti, quattro domande. Al termine avrai la tua mappa personale. Potrai sempre tornare a rivederla e cambiarla quando ti sentirai cambiato.")
                     .font(.equinozio(.corpoGrande))
                     .foregroundStyle(Color.inchiostroTenue)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, S.x2)
             }
 
@@ -233,6 +236,7 @@ struct EsplorazioneView: View {
                     .foregroundStyle(Color.inchiostro)
             }
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     // MARK: - Campo aggiungi custom
