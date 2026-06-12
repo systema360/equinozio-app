@@ -19,6 +19,7 @@ struct RiflessioneView: View {
     @State private var quoteMissione: Int = 25
     @State private var quoteProfessione: Int = 25
     @State private var storicoAperto = false
+    @State private var impostazioniAperte = false
     @State private var salvataggioFatto: Bool = false
     @State private var caricato: Bool = false
     @State private var pensiero: String = ""
@@ -100,6 +101,9 @@ struct RiflessioneView: View {
             StoricoRiflessioniView()
                 .presentationDetents([.large])
         }
+        .sheet(isPresented: $impostazioniAperte) {
+            ImpostazioniView()
+        }
         .onAppear {
             caricaSettimanaCorrente()
         }
@@ -141,6 +145,16 @@ struct RiflessioneView: View {
                 }
                 .buttonStyle(.plain)
             }
+            Button {
+                impostazioniAperte = true
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 16, weight: .light))
+                    .foregroundStyle(Color.attenuato)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Apri impostazioni")
+            .padding(.leading, S.x2)
         }
         .padding(.bottom, S.x2)
     }

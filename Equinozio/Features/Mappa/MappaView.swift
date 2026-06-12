@@ -80,19 +80,7 @@ struct MappaView: View {
 
             Spacer()
 
-            Button {
-                impostazioniAperte = true
-            } label: {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 18, weight: .light))
-                    .foregroundStyle(Color.attenuato)
-                    .frame(width: 36, height: 36)
-                    .background(Color.superficie)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.lineaSottile, lineWidth: 1))
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Apri impostazioni")
+            BottoneImpostazioni { impostazioniAperte = true }
         }
     }
 

@@ -22,6 +22,7 @@ struct DecisioneView: View {
     @State private var decisioneSelezionata: Decisione?
     @State private var modalità: Modalità = .aperte
     @State private var decisioneDaCancellare: Decisione?
+    @State private var impostazioniAperte = false
 
     private var decisioniAperte: [Decisione] {
         decisioni.filter { ($0.decisione ?? "").isEmpty }
@@ -39,7 +40,11 @@ struct DecisioneView: View {
         ZStack(alignment: .bottomTrailing) {
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
-                    intestazione
+                    HStack(alignment: .top) {
+                        intestazione
+                        Spacer()
+                        BottoneImpostazioni { impostazioniAperte = true }
+                    }
                     selettoreModalita.padding(.top, S.x4)
                 }
                 .padding(.horizontal, S.x5)
@@ -109,6 +114,9 @@ struct DecisioneView: View {
             DettaglioDecisione(decisione: d)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $impostazioniAperte) {
+            ImpostazioniView()
         }
     }
 

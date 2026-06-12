@@ -22,6 +22,7 @@ struct DiarioView: View {
     @State private var mostraUndo = false
     @State private var riassunto: String?
     @State private var riassumendo = false
+    @State private var impostazioniAperte = false
 
     private var pagineFiltrate: [Pagina] {
         RicercaDiario.filtra(pagine, cerchio: filtro, ricerca: ricerca)
@@ -31,17 +32,23 @@ struct DiarioView: View {
         ZStack(alignment: .bottomTrailing) {
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("Diario")
-                        .font(.equinozio(.occhiello))
-                        .tracking(2.4)
-                        .textCase(.uppercase)
-                        .foregroundStyle(Color.salvia)
-                        .padding(.bottom, S.x2)
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("Diario")
+                                .font(.equinozio(.occhiello))
+                                .tracking(2.4)
+                                .textCase(.uppercase)
+                                .foregroundStyle(Color.salvia)
+                                .padding(.bottom, S.x2)
 
-                    (Text("Le tue ") + Text("riflessioni").foregroundColor(.salvia))
-                        .font(.equinozio(.titoloMedio))
-                        .foregroundStyle(Color.inchiostro)
-                        .padding(.bottom, S.x4)
+                            (Text("Le tue ") + Text("riflessioni").foregroundColor(.salvia))
+                                .font(.equinozio(.titoloMedio))
+                                .foregroundStyle(Color.inchiostro)
+                        }
+                        Spacer()
+                        BottoneImpostazioni { impostazioniAperte = true }
+                    }
+                    .padding(.bottom, S.x4)
 
                     if !pagine.isEmpty {
                         ShareLink(item: EsportaDiario.testo(da: pagine)) {
@@ -160,6 +167,9 @@ struct DiarioView: View {
             DettaglioPaginaView(pagina: pagina)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $impostazioniAperte) {
+            ImpostazioniView()
         }
     }
 
