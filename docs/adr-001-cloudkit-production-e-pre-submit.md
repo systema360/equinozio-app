@@ -91,8 +91,8 @@ L'opzione A costa un file di debug ma rende lo schema deterministico. Con 7 mode
 
 ## Azioni
 
-1. [ ] Push su GitHub (`git push -u origin main` dal Mac — credenziali nel portachiavi)
-2. [ ] Eseguire runbook §1 (schema in Production)
+1. [x] Push su GitHub (2026-06-12)
+2. [x] Eseguire runbook §1 — schema inizializzato e deployato in Production, 7 record type verificati (2026-06-12)
 3. [ ] Deploy sito equinozio.app (privacy URL deve rispondere)
 4. [ ] Archive + Validate + TestFlight (§2–3)
 5. [ ] Completare scheda App Store Connect (§4)
