@@ -108,13 +108,11 @@ struct DecisioneView: View {
         }
         .sheet(isPresented: $composerAperto) {
             ComposerDecisione()
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
+                .foglioAdattivo()
         }
         .sheet(item: $decisioneSelezionata) { d in
             DettaglioDecisione(decisione: d)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
+                .foglioAdattivo()
         }
         .sheet(isPresented: $impostazioniAperte) {
             ImpostazioniView()
@@ -313,8 +311,7 @@ private struct ComposerDecisione: View {
                 VStack(alignment: .leading, spacing: S.x4) {
                     campoTitolo
                     campoScadenza
-                    radarLive
-                    sliders
+                    bloccoValutazione
                     campoNote
                     AzionePrimaria("Salva la decisione", azione: salva)
                         .opacity(titolo.trimmingCharacters(in: .whitespaces).isEmpty ? 0.4 : 1)
@@ -373,6 +370,24 @@ private struct ComposerDecisione: View {
                     .datePickerStyle(.compact)
                     .labelsHidden()
                     .environment(\.locale, Locale(identifier: "it_IT"))
+            }
+        }
+    }
+
+    /// Radar e punteggi affiancati dove la larghezza lo consente (iPad),
+    /// impilati su iPhone. Le larghezze fisse dei candidati servono a
+    /// ViewThatFits per decidere in modo deterministico.
+    private var bloccoValutazione: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .top, spacing: S.x4) {
+                radarLive
+                    .frame(width: 260)
+                sliders
+                    .frame(width: 320)
+            }
+            VStack(alignment: .leading, spacing: S.x4) {
+                radarLive
+                sliders
             }
         }
     }
@@ -514,6 +529,29 @@ private struct DettaglioDecisione: View {
         !(decisione.decisione ?? "").isEmpty
     }
 
+    private var radar: some View {
+        RadarDecisione(
+            passione: decisione.punteggioPassione,
+            talento: decisione.punteggioTalento,
+            missione: decisione.punteggioMissione,
+            professione: decisione.punteggioProfessione
+        )
+    }
+
+    private var punteggio: some View {
+        HStack(alignment: .firstTextBaseline, spacing: S.x3) {
+            Text(decisione.punteggioFormattato)
+                .font(.equinozio(.cifraGrande))
+                .foregroundStyle(Color.salvia)
+                .monospacedDigit()
+                .tracking(-1.5)
+
+            Text("/ 5")
+                .font(.equinozio(.corpoGrande))
+                .foregroundStyle(Color.attenuato)
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -527,24 +565,17 @@ private struct DettaglioDecisione: View {
                         .font(.equinozio(.titoloMedio))
                         .foregroundStyle(Color.inchiostro)
 
-                    RadarDecisione(
-                        passione: decisione.punteggioPassione,
-                        talento: decisione.punteggioTalento,
-                        missione: decisione.punteggioMissione,
-                        professione: decisione.punteggioProfessione
-                    )
-                    .frame(height: 260)
-
-                    HStack(alignment: .firstTextBaseline, spacing: S.x3) {
-                        Text(decisione.punteggioFormattato)
-                            .font(.equinozio(.cifraGrande))
-                            .foregroundStyle(Color.salvia)
-                            .monospacedDigit()
-                            .tracking(-1.5)
-
-                        Text("/ 5")
-                            .font(.equinozio(.corpoGrande))
-                            .foregroundStyle(Color.attenuato)
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: S.x5) {
+                            radar
+                                .frame(width: 300, height: 260)
+                            punteggio
+                        }
+                        VStack(alignment: .leading, spacing: S.x4) {
+                            radar
+                                .frame(height: 260)
+                            punteggio
+                        }
                     }
 
                     // Sezione decisione finale

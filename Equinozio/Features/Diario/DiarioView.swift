@@ -161,13 +161,11 @@ struct DiarioView: View {
         }
         .sheet(isPresented: $composerAperto) {
             ComposerPagina()
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
+                .foglioAdattivo(detents: [.medium, .large])
         }
         .sheet(item: $paginaSelezionata) { pagina in
             DettaglioPaginaView(pagina: pagina)
-                .presentationDetents([.large])
-                .presentationDragIndicator(.visible)
+                .foglioAdattivo()
         }
         .sheet(isPresented: $impostazioniAperte) {
             ImpostazioniView()
