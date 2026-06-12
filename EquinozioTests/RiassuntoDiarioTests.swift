@@ -32,4 +32,22 @@ struct RiassuntoDiarioTests {
         let vecchia = Pagina(testo: "x", dataCreazione: c.date(from: DateComponents(year: 2026, month: 1, day: 1))!)
         #expect(RiassuntoDiario.pagineSettimana([vecchia], adesso: oggi, calendario: c).isEmpty)
     }
+
+    @Test func testoPerRiassuntoRispettaIlLimiteEPreferisceLeRecenti() {
+        let c = cal
+        let vecchia = Pagina(testo: String(repeating: "v", count: 4000), dataCreazione: c.date(from: DateComponents(year: 2026, month: 6, day: 1))!)
+        let recente = Pagina(testo: String(repeating: "r", count: 4000), dataCreazione: c.date(from: DateComponents(year: 2026, month: 6, day: 3))!)
+
+        let out = RiassuntoDiario.testoPerRiassunto([vecchia, recente], massimoCaratteri: 4100)
+        #expect(out.contains("r"))
+        #expect(!out.contains("v"))
+        #expect(out.count <= 4100)
+    }
+
+    @Test func testoPerRiassuntoInOrdineCronologico() {
+        let c = cal
+        let p1 = Pagina(testo: "prima", dataCreazione: c.date(from: DateComponents(year: 2026, month: 6, day: 1))!)
+        let p2 = Pagina(testo: "dopo", dataCreazione: c.date(from: DateComponents(year: 2026, month: 6, day: 3))!)
+        #expect(RiassuntoDiario.testoPerRiassunto([p2, p1]) == "prima\n---\ndopo")
+    }
 }

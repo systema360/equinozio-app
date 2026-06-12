@@ -62,10 +62,23 @@ public final class MotoreSpunti {
     }
 
     private func testoCaldo(per fraseRegola: String) async -> String {
-        if let riscritta = await riscrittore(fraseRegola), !riscritta.isEmpty {
-            return riscritta
+        if let riscritta = await riscrittore(fraseRegola),
+           let valida = Self.ripulisci(riscritta) {
+            return valida
         }
         return fraseRegola
+    }
+
+    /// Accetta la riscrittura solo se è una singola frase breve e non vuota:
+    /// il testo finisce su widget e notifiche, dove lo spazio è poco.
+    /// Se il modello divaga, si torna alla frase a regole.
+    nonisolated static func ripulisci(_ riscritta: String) -> String? {
+        let primaRiga = riscritta
+            .components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .first(where: { !$0.isEmpty }) ?? ""
+        guard !primaRiga.isEmpty, primaRiga.count <= 220 else { return nil }
+        return primaRiga
     }
 
     // MARK: - Riscrittura predefinita (Foundation Models)
@@ -90,10 +103,15 @@ public final class MotoreSpunti {
         """
         do {
             let sessione = LanguageModelSession(instructions: istruzioni)
-            let risposta = try await sessione.respond(to: frase)
+            // Temperatura bassa (riscrittura fedele, non creativa) e tetto di
+            // token: l'output atteso è una sola frase breve.
+            let risposta = try await sessione.respond(
+                to: frase,
+                options: GenerationOptions(temperature: 0.3, maximumResponseTokens: 120)
+            )
             return risposta.content.trimmingCharacters(in: .whitespacesAndNewlines)
         } catch {
-            log.warning("Riscrittura AI fallita: \(error.localizedDescription)")
+            log.warning("Riscrittura AI fallita: \(String(describing: error))")
             return nil
         }
     }

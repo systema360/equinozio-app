@@ -64,7 +64,10 @@ struct DiarioView: View {
                         .padding(.bottom, S.x4)
                     }
 
-                    if #available(iOS 26.0, *), !RiassuntoDiario.pagineSettimana(pagine, adesso: .now).isEmpty {
+                    // Il bottone compare solo se Apple Intelligence è davvero attiva:
+                    // senza questo controllo un tap non produrrebbe nulla.
+                    if #available(iOS 26.0, *), StatoIntelligenza.corrente == .attiva,
+                       !RiassuntoDiario.pagineSettimana(pagine, adesso: .now).isEmpty {
                         bloccoRiassunto
                             .padding(.bottom, S.x4)
                     }

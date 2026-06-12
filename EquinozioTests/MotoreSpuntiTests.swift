@@ -49,4 +49,25 @@ struct MotoreSpuntiTests {
         let r = await m.spuntoPrincipale(riflessioni: [rifl(70, 10, 10, 10)], decisioni: [], adesso: .now)
         #expect(r?.testo == regola?.testo)
     }
+
+    @Test func ripulisciAccettaFraseBreveSuUnaRiga() {
+        #expect(MotoreSpunti.ripulisci("  Una frase sobria.  ") == "Una frase sobria.")
+    }
+
+    @Test func ripulisciPrendeLaPrimaRigaUtile() {
+        #expect(MotoreSpunti.ripulisci("\nPrima frase.\nSeconda frase.") == "Prima frase.")
+    }
+
+    @Test func ripulisciRifiutaVuotoETroppoLungo() {
+        #expect(MotoreSpunti.ripulisci("   ") == nil)
+        #expect(MotoreSpunti.ripulisci(String(repeating: "a", count: 300)) == nil)
+    }
+
+    @MainActor
+    @Test func spuntoFallbackAllaRegolaSeRiscritturaTroppoLunga() async {
+        let regola = GeneratoreInsight.genera(riflessioni: [rifl(70, 10, 10, 10)], decisioni: [], adesso: .now).first
+        let m = MotoreSpunti.perTest(riscrittore: { _ in String(repeating: "b", count: 400) })
+        let r = await m.spuntoPrincipale(riflessioni: [rifl(70, 10, 10, 10)], decisioni: [], adesso: .now)
+        #expect(r?.testo == regola?.testo)
+    }
 }

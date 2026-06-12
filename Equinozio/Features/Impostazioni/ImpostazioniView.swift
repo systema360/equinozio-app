@@ -110,6 +110,21 @@ struct ImpostazioniView: View {
                         sezioneDati
                     }
 
+                    sezione(occhiello: "Intelligenza", titolo: "Sul dispositivo") {
+                        Text(StatoIntelligenza.corrente.descrizione)
+                            .font(.equinozio(.corpoMedio))
+                            .foregroundStyle(Color.attenuato)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(S.x4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.superficie)
+                            .clipShape(RoundedRectangle(cornerRadius: R.r1))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: R.r1)
+                                    .stroke(Color.lineaSottile, lineWidth: 1)
+                            )
+                    }
+
                     sezione(occhiello: "Promemoria", titolo: "Riflessione settimanale") {
                         VStack(alignment: .leading, spacing: S.x3) {
                             Toggle(isOn: bindingPromemoria) {

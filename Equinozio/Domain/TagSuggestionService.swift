@@ -12,6 +12,21 @@ import OSLog
 
 #if canImport(FoundationModels)
 import FoundationModels
+
+/// Tipi a generazione guidata: vincolano l'output del modello ai soli
+/// valori validi, senza passare da JSON in testo libero.
+@available(iOS 26.0, macOS 26.0, *)
+@Generable
+fileprivate enum CerchioGenerabile: String {
+    case passione, talento, missione, professione
+}
+
+@available(iOS 26.0, macOS 26.0, *)
+@Generable
+fileprivate struct EtichetteGenerate {
+    @Guide(description: "Da uno a tre cerchi pertinenti, il più rilevante per primo.")
+    var cerchi: [CerchioGenerabile]
+}
 #endif
 
 @MainActor
@@ -48,15 +63,7 @@ public final class TagSuggestionService {
     #if canImport(FoundationModels)
     @available(iOS 26.0, macOS 26.0, *)
     private func tramiteFoundationModels(_ testo: String) async -> [TipoCerchio]? {
-
-        // Disponibilità del modello di sistema
-        let modello = SystemLanguageModel.default
-        switch modello.availability {
-        case .available:
-            break
-        default:
-            return nil
-        }
+        guard case .available = SystemLanguageModel.default.availability else { return nil }
 
         let istruzioni = """
         Sei un assistente per Equinozio, un'app italiana sul metodo dei quattro cerchi.
@@ -67,21 +74,27 @@ public final class TagSuggestionService {
         - missione: ciò che serve agli altri / al mondo
         - professione: ciò per cui è pagata oggi
 
-        L'utente ti darà una riflessione di diario. Indica da 1 a 3 cerchi a cui appartiene.
-        Rispondi SOLO con un array JSON. Esempi validi:
-        ["passione","talento"]
-        ["missione"]
-        ["passione","missione","talento"]
-
-        Niente testo prima o dopo. Niente spiegazioni.
+        L'utente ti darà una riflessione di diario. Indica da 1 a 3 cerchi a cui
+        appartiene, il più rilevante per primo.
         """
 
         do {
             let sessione = LanguageModelSession(instructions: istruzioni)
-            let risposta = try await sessione.respond(to: testo)
-            return estraiEtichette(daTesto: risposta.content)
+            // Generazione guidata: l'output può contenere SOLO i quattro valori
+            // dell'enum, niente parsing di testo libero. Campionamento greedy
+            // per risultati deterministici a parità di testo.
+            let risposta = try await sessione.respond(
+                to: testo,
+                generating: EtichetteGenerate.self,
+                options: GenerationOptions(sampling: .greedy)
+            )
+            var visti = Set<TipoCerchio>()
+            let tipi = risposta.content.cerchi
+                .compactMap { TipoCerchio(rawValue: $0.rawValue) }
+                .filter { visti.insert($0).inserted }
+            return Array(tipi.prefix(3))
         } catch {
-            log.warning("Foundation Models error: \(error.localizedDescription)")
+            log.warning("Foundation Models error: \(String(describing: error))")
             return nil
         }
     }
@@ -91,27 +104,6 @@ public final class TagSuggestionService {
         return nil
     }
     #endif
-
-    private func estraiEtichette(daTesto risposta: String) -> [TipoCerchio] {
-        // Trovo l'array JSON
-        guard let range = risposta.range(of: #"\[[^\]]*\]"#, options: .regularExpression) else {
-            return []
-        }
-        let jsonString = String(risposta[range])
-        guard let data = jsonString.data(using: .utf8),
-              let array = try? JSONDecoder().decode([String].self, from: data) else {
-            return []
-        }
-
-        var risultato: [TipoCerchio] = []
-        for raw in array {
-            if let tipo = TipoCerchio(rawValue: raw.lowercased().trimmingCharacters(in: .whitespaces)),
-               !risultato.contains(tipo) {
-                risultato.append(tipo)
-            }
-        }
-        return Array(risultato.prefix(3))
-    }
 
     // MARK: - Fallback euristico
 
