@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import UserNotifications
+import WidgetKit
 
 struct ImpostazioniView: View {
 
@@ -22,6 +23,8 @@ struct ImpostazioniView: View {
     @State private var promemoriaAttivo: Bool = false
     @State private var statoPromemoria: UNAuthorizationStatus = .notDetermined
     @State private var iCloudService = iCloudStatoService.shared
+    @State private var confermaCancellazione = false
+    @State private var esitoCancellazione: String?
     @AppStorage("schemaPreferito") private var schemaPreferito: SchemaPreferito = .sistema
     @AppStorage("promemoriaRiflessione") private var promemoriaPersistito: Bool = false
     @AppStorage("promemoriaGiorno") private var promemoriaGiorno: Int = 1
@@ -103,6 +106,10 @@ struct ImpostazioniView: View {
                         sezioneICloud
                     }
 
+                    sezione(occhiello: "Dati", titolo: "I tuoi dati") {
+                        sezioneDati
+                    }
+
                     sezione(occhiello: "Promemoria", titolo: "Riflessione settimanale") {
                         VStack(alignment: .leading, spacing: S.x3) {
                             Toggle(isOn: bindingPromemoria) {
@@ -158,7 +165,7 @@ struct ImpostazioniView: View {
                         )
                     }
 
-                    sezione(occhiello: "Equinozio", titolo: "Da Systema360, con cura") {
+                    sezione(occhiello: "Equinozio", titolo: "Da Systema360") {
                         Button {
                             manifestoAperto = true
                         } label: {
@@ -186,7 +193,7 @@ struct ImpostazioniView: View {
                         .buttonStyle(.plain)
 
                         ShareLink(
-                            item: URL(string: "https://systema360.it")!,
+                            item: URL(string: "https://equinozio.app")!,
                             subject: Text("Equinozio"),
                             message: Text("Equinozio, uno strumento sobrio per bilanciare i quattro cerchi della tua vita. Gratis, da Systema360.")
                         ) {
@@ -213,6 +220,28 @@ struct ImpostazioniView: View {
                         }
                         .buttonStyle(.plain)
                         .padding(.top, S.x2)
+
+                        HStack(spacing: S.x4) {
+                            Link(destination: URL(string: "https://equinozio.app/privacy")!) {
+                                HStack(spacing: S.x1) {
+                                    Image(systemName: "hand.raised")
+                                        .font(.system(size: 11, weight: .medium))
+                                    Text("Privacy")
+                                        .font(.equinozio(.corpoMedio))
+                                }
+                                .foregroundStyle(Color.salvia)
+                            }
+                            Link(destination: URL(string: "https://equinozio.app/termini")!) {
+                                HStack(spacing: S.x1) {
+                                    Image(systemName: "doc.text")
+                                        .font(.system(size: 11, weight: .medium))
+                                    Text("Termini")
+                                        .font(.equinozio(.corpoMedio))
+                                }
+                                .foregroundStyle(Color.salvia)
+                            }
+                        }
+                        .padding(.top, S.x3)
 
                         Text("Versione \(versioneEBuild)")
                             .font(.equinozio(.corpoMedio))
@@ -476,21 +505,24 @@ struct ImpostazioniView: View {
                 }
                 .buttonStyle(.plain)
 
-                if !iCloudService.stato.disponibile {
-                    if let url = URL(string: "App-prefs:CASTLE") {
-                        Link(destination: url) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "gear")
-                                    .font(.system(size: 11, weight: .medium))
-                                Text("APRI IMPOSTAZIONI iOS")
-                                    .font(.equinozio(.etichetta))
-                                    .tracking(1.6)
-                            }
-                            .foregroundStyle(Color.salvia)
+                if let url = URL(string: "App-prefs:CASTLE") {
+                    Link(destination: url) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "gear")
+                                .font(.system(size: 11, weight: .medium))
+                            Text("APRI IMPOSTAZIONI iOS")
+                                .font(.equinozio(.etichetta))
+                                .tracking(1.6)
                         }
+                        .foregroundStyle(Color.salvia)
                     }
                 }
             }
+
+            Text("La sincronizzazione si attiva e si disattiva da Impostazioni iOS: il tuo nome → iCloud → Salvati su iCloud → Equinozio. Se la disattivi, i contenuti restano comunque sul dispositivo.")
+                .font(.equinozio(.corpoMedio))
+                .foregroundStyle(Color.attenuato)
+                .fixedSize(horizontal: false, vertical: true)
 
             Text("Container · iCloud.it.systema360.equinozio")
                 .font(.system(size: 10, weight: .regular))
@@ -505,6 +537,69 @@ struct ImpostazioniView: View {
             RoundedRectangle(cornerRadius: R.r1)
                 .stroke(Color.lineaSottile, lineWidth: 1)
         )
+    }
+
+    // MARK: - Sezione dati
+
+    private var sezioneDati: some View {
+        VStack(alignment: .leading, spacing: S.x3) {
+            Text("Tutto ciò che scrivi resta sul dispositivo e nel tuo iCloud privato. Puoi esportare il diario in qualsiasi momento dalla scheda Diario (icona di condivisione).")
+                .font(.equinozio(.corpoMedio))
+                .foregroundStyle(Color.attenuato)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Button(role: .destructive) {
+                confermaCancellazione = true
+            } label: {
+                HStack {
+                    Image(systemName: "trash")
+                        .font(.system(size: 18, weight: .light))
+                        .frame(width: 28)
+                    Text("Cancella tutti i dati")
+                        .font(.equinozio(.corpo))
+                    Spacer()
+                }
+                .foregroundStyle(Color.red)
+            }
+            .buttonStyle(.plain)
+
+            if let esitoCancellazione {
+                Text(esitoCancellazione)
+                    .font(.equinozio(.corpoMedio))
+                    .foregroundStyle(Color.attenuato)
+            }
+        }
+        .padding(S.x4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.superficie)
+        .clipShape(RoundedRectangle(cornerRadius: R.r1))
+        .overlay(
+            RoundedRectangle(cornerRadius: R.r1)
+                .stroke(Color.lineaSottile, lineWidth: 1)
+        )
+        .confirmationDialog(
+            "Cancellare tutti i dati?",
+            isPresented: $confermaCancellazione,
+            titleVisibility: .visible
+        ) {
+            Button("Cancella tutto", role: .destructive) { cancellaTuttiIDati() }
+            Button("Annulla", role: .cancel) {}
+        } message: {
+            Text("Elimina cerchi, diario, riflessioni, decisioni e profilo dal dispositivo e dal tuo iCloud privato, su tutti i dispositivi collegati. L'operazione non è reversibile.")
+        }
+    }
+
+    private func cancellaTuttiIDati() {
+        do {
+            try CancellazioneDati.cancellaTutto(in: contesto)
+            WidgetSnapshot.azzera()
+            WidgetCenter.shared.reloadAllTimelines()
+            esplorazioneCompletata = false
+            nomeEditabile = ""
+            esitoCancellazione = "Tutti i dati sono stati cancellati."
+        } catch {
+            esitoCancellazione = "Cancellazione non riuscita. Riprova."
+        }
     }
 
     // MARK: - Helper

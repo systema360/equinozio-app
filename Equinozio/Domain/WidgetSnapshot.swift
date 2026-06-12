@@ -64,6 +64,15 @@ public nonisolated enum WidgetSnapshot {
         )
     }
 
+    /// Rimuove l'intero snapshot dall'App Group (usato dalla cancellazione totale dei dati).
+    public static func azzera() {
+        guard let difese = UserDefaults(suiteName: suite) else { return }
+        [chiaveEquilibrio, chiavePassione, chiaveTalento, chiaveMissione,
+         chiaveProfessione, chiaveTrend, chiaveHaTrend, chiaveHaRiflessioni,
+         chiaveSpuntoTesto, chiaveSpuntoTipo, chiaveSettimana]
+            .forEach { difese.removeObject(forKey: $0) }
+    }
+
     private static func scriviMisure(_ m: MisureWidget, in d: UserDefaults) {
         d.set(m.equilibrio, forKey: chiaveEquilibrio)
         d.set(m.passione, forKey: chiavePassione)
