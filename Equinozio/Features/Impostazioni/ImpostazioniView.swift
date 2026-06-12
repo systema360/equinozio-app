@@ -523,11 +523,6 @@ struct ImpostazioniView: View {
                 .font(.equinozio(.corpoMedio))
                 .foregroundStyle(Color.attenuato)
                 .fixedSize(horizontal: false, vertical: true)
-
-            Text("Container · iCloud.it.systema360.equinozio")
-                .font(.system(size: 10, weight: .regular))
-                .foregroundStyle(Color.attenuato)
-                .padding(.top, S.x1)
         }
         .padding(S.x4)
         .frame(maxWidth: .infinity, alignment: .leading)
