@@ -26,6 +26,12 @@ struct EquinozioApp: App {
         // Splash animato solo al primo avvio dopo installazione (HIG: niente splash ricorrenti).
         let primo = UserDefaults.standard.bool(forKey: "primoAvvioFatto")
         _splashAttiva = State(initialValue: !primo)
+
+        #if DEBUG
+        // Inizializza lo schema CloudKit in Development se lanciata con
+        // l'argomento "-inizializza-schema-cloudkit" (vedi SchemaCloudKitDebug).
+        SchemaCloudKitDebug.inizializzaSeRichiesto()
+        #endif
     }
 
     var modelContainer: ModelContainer = {
