@@ -248,7 +248,7 @@ struct ImpostazioniView: View {
                             .foregroundStyle(Color.inchiostroTenue)
                             .padding(.top, S.x3)
 
-                        Text("Equinozio è il biglietto da visita di Systema360, studio di consulenza e progettazione digitale a Potenza. Se ti serve un sistema digitale curato così, parliamone.")
+                        Text("Progettata e costruita a Potenza da Systema360.")
                             .font(.equinozio(.corpoMedio))
                             .foregroundStyle(Color.inchiostroTenue)
                             .fixedSize(horizontal: false, vertical: true)
