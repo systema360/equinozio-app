@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		AABB00032FD08DC500EDA9C9 /* EquinozioWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00022FD08DC500EDA9C9 /* EquinozioWidget.swift */; };
 		AABB00092FD08DC500EDA9C9 /* EquinozioWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AABB00042FD08DC500EDA9C9 /* EquinozioWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E39AC63C2FD940D50000A2BB /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E39AC63B2FD940D50000A2BB /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		AABB00042FD08DC500EDA9C9 /* EquinozioWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EquinozioWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AABB00102FD08DC500EDA9C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AABB00112FD08DC500EDA9C9 /* EquinozioWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EquinozioWidget.entitlements; sourceTree = "<group>"; };
+		E39AC63B2FD940D50000A2BB /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E3EF9BE02FD08DC400EDA9C9 /* Equinozio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Equinozio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3EF9BF12FD08DC500EDA9C9 /* EquinozioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EquinozioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3EF9BFB2FD08DC500EDA9C9 /* EquinozioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EquinozioUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +127,7 @@
 		AABB000F2FD08DC500EDA9C9 /* EquinozioWidget */ = {
 			isa = PBXGroup;
 			children = (
+				E39AC63B2FD940D50000A2BB /* PrivacyInfo.xcprivacy */,
 				AABB00022FD08DC500EDA9C9 /* EquinozioWidget.swift */,
 				AABB00102FD08DC500EDA9C9 /* Info.plist */,
 				AABB00112FD08DC500EDA9C9 /* EquinozioWidget.entitlements */,
@@ -300,6 +303,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E39AC63C2FD940D50000A2BB /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

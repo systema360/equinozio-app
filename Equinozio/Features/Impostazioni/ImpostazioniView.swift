@@ -214,7 +214,7 @@ struct ImpostazioniView: View {
                         .buttonStyle(.plain)
                         .padding(.top, S.x2)
 
-                        Text("Versione 1.0 (1)")
+                        Text("Versione \(versioneEBuild)")
                             .font(.equinozio(.corpoMedio))
                             .foregroundStyle(Color.inchiostroTenue)
                             .padding(.top, S.x3)
@@ -508,6 +508,13 @@ struct ImpostazioniView: View {
     }
 
     // MARK: - Helper
+
+    /// Versione e build dell'app lette dal bundle, es. "1.0 (1)".
+    private var versioneEBuild: String {
+        let versione = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
+        return "\(versione) (\(build))"
+    }
 
     @ViewBuilder
     private func sezione<C: View>(occhiello: String, titolo: String, @ViewBuilder content: () -> C) -> some View {
