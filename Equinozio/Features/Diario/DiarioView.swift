@@ -124,6 +124,7 @@ struct DiarioView: View {
                     }
                 }
             }
+            .larghezzaContenuta()
             .background(Color.sfondo)
 
             FabAggiunta(accessibilityLabelTesto: "Aggiungi una pagina al diario") {

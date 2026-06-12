@@ -93,6 +93,8 @@ struct RiflessioneView: View {
             .padding(.horizontal, S.x5)
             .padding(.top, S.x7)
             .padding(.bottom, S.x6)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .larghezzaContenuta()
         }
         .scrollDismissesKeyboard(.interactively)
         .toolbarTastieraFine()

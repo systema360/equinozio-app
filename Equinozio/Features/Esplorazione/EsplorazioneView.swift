@@ -117,6 +117,7 @@ struct EsplorazioneView: View {
         .padding(.top, S.x4)
         .padding(.bottom, S.x5)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .larghezzaContenuta()
     }
 
     private func rigaSpiegazione(tipo: TipoCerchio, descr: String) -> some View {
@@ -188,6 +189,8 @@ struct EsplorazioneView: View {
             .padding(.horizontal, S.x5)
             .padding(.top, modale ? S.x4 : S.x7)
             .padding(.bottom, S.x6)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .larghezzaContenuta()
         }
         .scrollDismissesKeyboard(.interactively)
     }

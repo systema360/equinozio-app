@@ -95,6 +95,7 @@ struct DecisioneView: View {
                     }
                 }
             }
+            .larghezzaContenuta()
             .background(Color.sfondo)
 
             if modalità == .aperte {

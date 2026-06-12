@@ -73,6 +73,8 @@ struct ManifestoView: View {
                 .padding(.horizontal, S.x5)
                 .padding(.top, S.x4)
                 .padding(.bottom, S.x6)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .larghezzaContenuta()
             }
             .background(Color.sfondo)
             .toolbar {

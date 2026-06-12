@@ -53,6 +53,8 @@ struct MappaView: View {
             .padding(.horizontal, S.x5)
             .padding(.top, S.x6)
             .padding(.bottom, S.x6)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .larghezzaContenuta()
         }
         .background(Color.sfondo)
         .sheet(isPresented: $impostazioniAperte) {
